@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sib_app/data/datasource/1authentication_datasource.dart';
+import 'package:sib_app/data/datasource/category_datasource.dart';
 import 'package:sib_app/data/repository/4authentication_repository.dart';
+import 'package:sib_app/data/repository/category_repository.dart';
 
 var locator = GetIt.instance;
 Future<void> getItInit() async {
@@ -14,11 +16,24 @@ Future<void> getItInit() async {
   locator.registerSingleton<SharedPreferences>(
     await SharedPreferences.getInstance(),
   );
+
+
+
   locator.registerFactory<IAuthenticationDatasource>(
     () => AuthenticationRemote(),
   );
+  locator.registerFactory<ICategoryDatasource>(
+    () => CategoryRemoteDatasource(),
+  );
+
+
+
+
   locator.registerFactory<IAuthRepository>(
     () => AuthencticationRepository(),
+  );
+locator.registerFactory<ICategoryRepository>(
+    () => CategoryRepository(),
   );
 
   // await _initComponents();
