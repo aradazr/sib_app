@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sib_app/data/datasource/1authentication_datasource.dart';
+import 'package:sib_app/data/datasource/banner_datasource.dart';
 import 'package:sib_app/data/datasource/category_datasource.dart';
 import 'package:sib_app/data/repository/4authentication_repository.dart';
+import 'package:sib_app/data/repository/banner_repository.dart';
 import 'package:sib_app/data/repository/category_repository.dart';
 
 var locator = GetIt.instance;
@@ -17,22 +19,25 @@ Future<void> getItInit() async {
     await SharedPreferences.getInstance(),
   );
 
-
-
   locator.registerFactory<IAuthenticationDatasource>(
     () => AuthenticationRemote(),
   );
   locator.registerFactory<ICategoryDatasource>(
     () => CategoryRemoteDatasource(),
   );
+  locator.registerFactory<IBannerDataSource>(
+    () => BannerRemoteDataSource(),
+  );
 
-
-
+  //!---------------------------------------------------------------------
 
   locator.registerFactory<IAuthRepository>(
     () => AuthencticationRepository(),
   );
-locator.registerFactory<ICategoryRepository>(
+  locator.registerFactory<IBannerRepository>(
+    () => BannerRepository(),
+  );
+  locator.registerFactory<ICategoryRepository>(
     () => CategoryRepository(),
   );
 

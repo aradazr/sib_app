@@ -3,15 +3,19 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sib_app/constans/my_colors.dart';
+import 'package:sib_app/data/model/banner.dart';
+import 'package:sib_app/widgets/cached_image.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class ImageSlider extends StatelessWidget {
-  const ImageSlider({
+class BannerSlider extends StatelessWidget {
+   BannerSlider({
     super.key,
     required this.controller,
+    required this.bannersList,
   });
 
   final PageController controller;
+  final List<BannerCampain> bannersList;
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +26,13 @@ class ImageSlider extends StatelessWidget {
           height: 25.h,
           child: PageView.builder(
             controller: controller,
-            itemCount: 3,
+            itemCount: bannersList.length,
             itemBuilder: (context, index) {
-              return Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.only(
-                    left: 20, right: 20, top: 24, bottom: 10),
-                width: 25.w,
-                decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(30)),
+              return Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15,top: 15),
+                child: CachedImage(
+                  radius: 20,
+                  imageUrl: bannersList[index].thumbnail,),
               );
             },
           ),

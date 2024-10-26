@@ -14,6 +14,7 @@ import 'package:sib_app/Screens/most_sell_page.dart';
 import 'package:sib_app/Screens/my_profile_page.dart';
 import 'package:sib_app/Screens/product_details.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
+import 'package:sib_app/bloc/banner/home/home_bloc.dart';
 import 'package:sib_app/bloc/category/bloc/category_bloc.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/di/2di.dart';
@@ -104,7 +105,10 @@ List<Widget> _buildScreens() {
       create: (context) => CategoryBloc(),
       child: CategoryPage(),
     ),
-    HomePage(),
+    BlocProvider(
+      create: (context) => HomeBloc(),
+      child: HomePage(),
+    ),
   ];
 }
 
