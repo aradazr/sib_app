@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:sib_app/data/model/banner.dart';
 import 'package:sib_app/data/model/category.dart';
+import 'package:sib_app/data/model/product.dart';
 
 abstract class HomeState {}
 
@@ -11,14 +12,17 @@ class HomeLoadingState extends HomeState {}
 class HomeRequestSuccessState extends HomeState {
   Either<String, List<BannerCampain>> bannerList;
   Either<String, List<Category>> categoryList;
-  // Either<String, List<Product>> productList;
-  // Either<String, List<Product>> hotestProductList;
-  // Either<String, List<Product>> bestSellerProductList;
+  Either<String, List<Product>> productList;
+  Either<String, List<Product>> hotestProductList;
+  Either<String, List<Product>> bestSellerProductList;
 
-  HomeRequestSuccessState(this.bannerList,
-   this.categoryList,
-  //   this.productList,
-  //     this.hotestProductList,
-  //      this.bestSellerProductList
-       );
+  HomeRequestSuccessState(
+    this.bannerList,
+    this.categoryList,
+    this.productList,
+        this.hotestProductList,
+         this.bestSellerProductList
+  );
 }
+
+

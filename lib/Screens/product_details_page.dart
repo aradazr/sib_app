@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sib_app/constans/my_colors.dart';
+import 'package:sib_app/data/repository/product_detail_repository.dart';
+import 'package:sib_app/di/2di.dart';
 import 'package:sib_app/main.dart';
 
 class ProductDetailsPage extends StatelessWidget {
@@ -48,18 +50,22 @@ class ProductDetailsPage extends StatelessWidget {
                     height: 8.h,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 154),
+                    padding: const EdgeInsets.only(left: 154,right: 154,bottom: 24),
                     child: Image.asset(
                       'assets/images/blue_iphone.png',
                       height: 209,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 28),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
+                  SizedBox(
+                    height: 11.2.h,
+                    width: 100.w,
+                    child: ListView.builder(
+                      
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 7),
                           width: 24.3.w,
                           height: 11.2.h,
                           decoration: BoxDecoration(
@@ -74,41 +80,9 @@ class ProductDetailsPage extends StatelessWidget {
                               'assets/images/blue_iphone.png',
                             ),
                           ),
-                        ),
-                        Container(
-                          width: 24.3.w,
-                          height: 11.2.h,
-                          decoration: BoxDecoration(
-                            color: LightColors.productMorePhotosBackGround,
-                            borderRadius: BorderRadius.circular(13),
-                            border: Border.all(
-                                color: LightColors.tomanColor, width: 1),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Image.asset(
-                              'assets/images/blue_iphone.png',
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 24.3.w,
-                          height: 11.2.h,
-                          decoration: BoxDecoration(
-                            color: LightColors.productMorePhotosBackGround,
-                            borderRadius: BorderRadius.circular(13),
-                            border: Border.all(
-                                color: LightColors.tomanColor, width: 1),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Image.asset(
-                              'assets/images/blue_iphone.png',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                        );
+                      
+                    },),
                   ),
                   SizedBox(
                     height: 2.4.h,
@@ -436,19 +410,32 @@ class ProductDetailsPage extends StatelessWidget {
                        )
                       ],
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      height: 4.85.h,
-                      width: 28.w,
-                      decoration: BoxDecoration(
-                        color: LightColors.showPriceInsideContainer,
-                        borderRadius: BorderRadius.circular(8)
+                    InkWell(
+                      onTap: () async {
+                        IDetailProductRepository repository = locator.get();
+                        var response = await repository.getProuctImage();
+                        response.fold((l) {
+                          
+                        }, (r) {
+                          r.forEach((element) {
+                            print(element.imageUrl);
+                          },);
+                        },);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 4.85.h,
+                        width: 28.w,
+                        decoration: BoxDecoration(
+                          color: LightColors.showPriceInsideContainer,
+                          borderRadius: BorderRadius.circular(8)
+                        ),
+                        child: Text('اضافه به سبد',style: TextStyle(
+                          fontFamily: 'shmid',
+                          fontSize: 15.sp,
+                          color: LightColors.categoryText
+                        ),),
                       ),
-                      child: Text('اضافه به سبد',style: TextStyle(
-                        fontFamily: 'shmid',
-                        fontSize: 15.sp,
-                        color: LightColors.categoryText
-                      ),),
                     )
                   ],
                 ),

@@ -12,7 +12,7 @@ import 'package:sib_app/Screens/home_page.dart';
 import 'package:sib_app/Screens/login_page.dart';
 import 'package:sib_app/Screens/most_sell_page.dart';
 import 'package:sib_app/Screens/my_profile_page.dart';
-import 'package:sib_app/Screens/product_details.dart';
+import 'package:sib_app/Screens/product_details_page.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
 import 'package:sib_app/bloc/banner/home/home_bloc.dart';
 import 'package:sib_app/bloc/category/bloc/category_bloc.dart';

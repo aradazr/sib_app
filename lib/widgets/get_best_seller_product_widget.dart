@@ -1,16 +1,19 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:sib_app/Screens/home_page.dart';
-import 'package:sib_app/constans/custom_clip.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/product.dart';
 import 'package:sib_app/widgets/product_item.dart';
 
-class MostSeeItem extends StatelessWidget {
+class GetBestSellerProduct extends StatelessWidget {
+
   final List<Product> productList;
-  const MostSeeItem({
-    super.key, required this.productList,
-  });
+
+  GetBestSellerProduct({
+    Key? key,
+    required this.productList,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,7 @@ class MostSeeItem extends StatelessWidget {
                 ],
               ),
               Text(
-                'پر بازدید ترین ها',
+                'پر فروش ترین ها',
                 style: TextStyle(
                   fontFamily: 'shbold',
                   fontSize: 15.sp,
@@ -62,7 +65,7 @@ class MostSeeItem extends StatelessWidget {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return ProductItem(product: productList[index]);
+              return ProductItem(product: productList[index],);
             },
           ),
         )

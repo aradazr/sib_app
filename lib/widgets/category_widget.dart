@@ -1,58 +1,68 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/category.dart';
-import 'package:sib_app/widgets/cached_image.dart';
+import 'package:sib_app/widgets/category_itemchip_widget.dart';
 
-class CategoryItemChip extends StatelessWidget {
-  Category categorys;
-   CategoryItemChip({
+class CategoryWidget extends StatelessWidget {
+  final List<Category> listCategories;
+
+  CategoryWidget({
     Key? key,
-    required this.categorys,
+    required this.listCategories,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String categoryColor = 'ff${categorys.color}';
-    int hexColor = int.parse(categoryColor, radix: 16);
     return Column(
       children: [
-        Container(
-             padding: EdgeInsets.all(15),
-           width: 14.3.w,
-           decoration: ShapeDecoration(
-             shadows: [
-               BoxShadow(
-                   color: Color(hexColor),
-                   blurRadius: 6,
-                   offset: Offset(0, 0))
-             ],
-             color: Color(hexColor),
-             shape: ContinuousRectangleBorder(
-               borderRadius: BorderRadius.circular(50),
-             ),
-           ),
-           margin: EdgeInsets.symmetric(
-             horizontal: 7,
-             vertical: 3
-             
-           ),
-           child: SizedBox(
-            height:28,
-             child: CachedImage(
-              fit: BoxFit.contain,
-               imageUrl: categorys.icon,
-             
-               ),
-           )
-             ,
-           ),
-           SizedBox(height: 1.2.h,),
-           Text(categorys.title!,style: TextStyle(color: LightColors.categoryText,fontFamily: 'shmid'),)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/images/doubleArrow.png',
+                    height: 1.2.h,
+                  ),
+                  SizedBox(
+                    width: 2.w,
+                  ),
+                  Text(
+                    'مشاهده همه',
+                    style: TextStyle(
+                      fontFamily: 'shbold',
+                      fontSize: 15.sp,
+                      color: LightColors.seeAllText,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                'دسته بندی ها',
+                style: TextStyle(
+                  fontFamily: 'shbold',
+                  fontSize: 15.sp,
+                  color: LightColors.categoryText,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 11.h,
+          width: double.infinity,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: listCategories.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return CategoryItemChip(categorys: listCategories[index]);
+            },
+          ),
+        )
       ],
     );
   }
