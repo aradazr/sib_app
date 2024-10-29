@@ -1,16 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'package:sib_app/Screens/home_page.dart';
 import 'package:sib_app/Screens/product_details_page.dart';
+import 'package:sib_app/bloc/product/bloc/product_bloc.dart';
 import 'package:sib_app/constans/custom_clip.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/product.dart';
 import 'package:sib_app/widgets/cached_image.dart';
 
 class ProductItem extends StatelessWidget {
-
   Product product;
   ProductItem({
     Key? key,
@@ -26,7 +27,10 @@ class ProductItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductDetailsPage(),
+              builder: (context) => BlocProvider(
+                create: (context) => ProductBloc(),
+                child: ProductDetailsPage(),
+              ),
             ),
           );
         },
@@ -56,10 +60,9 @@ class ProductItem extends StatelessWidget {
                         ),
                         SizedBox(
                           height: 11.h,
-                          
                           child: CachedImage(
                             fit: BoxFit.cover,
-                           imageUrl: product.thumbnail,
+                            imageUrl: product.thumbnail,
                           ),
                         ),
                         SizedBox(
@@ -82,24 +85,23 @@ class ProductItem extends StatelessWidget {
                     top: 0,
                     left: 16,
                     child: ClipPath(
-        
                       clipper: RPSCustomPainter(),
                       child: Container(
                         alignment: Alignment.center,
                         height: 4.2.h,
                         width: 4.87.w,
-                        decoration: BoxDecoration(
-                            color: LightColors.discountContainer),
+                        decoration:
+                            BoxDecoration(color: LightColors.discountContainer),
                         child: RotatedBox(
                             quarterTurns: -1, // 1 یعنی چرخش 90 درجه,
-            
+
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8),
                               child: Text(
                                 '% ${product.persent!.round().toString()}',
                                 style: TextStyle(
-                                    color: LightColors
-                                        .mostSellItemBottomContainer,
+                                    color:
+                                        LightColors.mostSellItemBottomContainer,
                                     fontSize: 13.sp,
                                     fontFamily: 'shmid'),
                               ),
@@ -147,12 +149,10 @@ class ProductItem extends StatelessWidget {
                             Text(
                               product.price.toString(),
                               style: TextStyle(
-                                  decoration:
-                                      TextDecoration.lineThrough,
+                                  decoration: TextDecoration.lineThrough,
                                   fontFamily: 'shmid',
                                   fontSize: 13.sp,
-                                  color:
-                                      LightColors.productPreviousPrice),
+                                  color: LightColors.productPreviousPrice),
                             ),
                             SizedBox(
                               height: .2.h,
