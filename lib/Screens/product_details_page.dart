@@ -9,6 +9,9 @@ import 'package:sib_app/bloc/product/bloc/product_state.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/product.dart';
 import 'package:sib_app/data/model/product_image.dart';
+import 'package:sib_app/data/model/product_varient.dart';
+import 'package:sib_app/data/model/varient.dart';
+import 'package:sib_app/data/model/varient_type.dart';
 import 'package:sib_app/data/repository/product_detail_repository.dart';
 import 'package:sib_app/di/2di.dart';
 import 'package:sib_app/main.dart';
@@ -79,12 +82,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       SizedBox(
                         height: 8.h,
                       ),
-                      if(state is ProductDetailResponseState)...{
-                             state.productImages.fold((l) {
-                               return Text(l);
-                             }, (productImageList) {
-                               return GallaryWidget(productImageList: productImageList,);
-                             },)
+                      if (state is ProductDetailResponseState) ...{
+                        state.productImages.fold(
+                          (l) {
+                            return Text(l);
+                          },
+                          (productImageList) {
+                            return GallaryWidget(
+                              productImageList: productImageList,
+                            );
+                          },
+                        )
                       },
                       SizedBox(
                         height: 2.4.h,
@@ -127,54 +135,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       SizedBox(
                         height: 1.4.h,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 17, bottom: 12),
-                        child: Text(
-                          'رنگ',
-                          style: TextStyle(
-                              fontFamily: 'shbold',
-                              fontSize: 17.sp,
-                              color: LightColors.categoryText),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 17),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              height: 1.9.h,
-                              width: 4.1.w,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 1.1.w,
-                            ),
-                            Container(
-                              height: 1.9.h,
-                              width: 4.1.w,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 1.1.w,
-                            ),
-                            Container(
-                              height: 1.9.h,
-                              width: 4.1.w,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      if (state is ProductDetailResponseState) ...{
+                        state.productVarient.fold(
+                          (l) {
+                            return Text(l);
+                          },
+                          (productVariantList) {
+                            return VariantContainer(
+                                productVariantList: productVariantList);
+                          },
+                        )
+                      },
                       Padding(
                         padding: const EdgeInsets.only(right: 17, top: 19),
                         child: Text(
@@ -459,6 +430,65 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 }
 
+class VariantContainer extends StatelessWidget {
+  List<ProductVariant> productVariantList;
+  VariantContainer({super.key, required this.productVariantList});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Padding(
+          padding:  EdgeInsets.only(right: 17, bottom: 12),
+          child: Text(
+            productVariantList[0].variantType.title!,
+            style: TextStyle(
+                fontFamily: 'shbold',
+                fontSize: 17.sp,
+                color: LightColors.categoryText),
+          ),
+        ),
+        Padding(
+          padding:  EdgeInsets.only(right: 17),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ..._buildColorVareintOptions(productVariantList[0].variantList),
+            ]
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+List<Widget> _buildColorVareintOptions(List<Variant> variantList) {
+  List<Widget> colorWidgets = [];
+
+  for (var colorVaraent in variantList) {
+
+    String categoryColor = 'ff${colorVaraent.value}';
+
+    int hexColor = int.parse(categoryColor, radix: 16);
+    var item = Padding(
+      padding: const EdgeInsets.only(right: 0),
+      child: Container(
+        margin: EdgeInsets.only(right: 10),
+        height: 4.h,
+        width: 8.w,
+        decoration: BoxDecoration(
+          color: Color(hexColor),
+          borderRadius: BorderRadius.circular(50),
+        ),
+      ),
+    );
+
+    colorWidgets.add(item);
+  }
+  return colorWidgets;
+}
+
 class GallaryWidget extends StatefulWidget {
   List<ProductImage> productImageList;
   GallaryWidget({
@@ -480,16 +510,13 @@ class _GallaryWidgetState extends State<GallaryWidget> {
           height: 3.h,
         ),
         Padding(
-          padding: const EdgeInsets.only(
-              left: 95, right: 95, bottom: 24),
-          child: SizedBox(
-            height: 150,
-            child: CachedImage(
-              
-              imageUrl: widget.productImageList[seleectedItem].imageUrl,
-            ),
-          )
-        ),
+            padding: const EdgeInsets.only(left: 95, right: 95, bottom: 24),
+            child: SizedBox(
+              height: 150,
+              child: CachedImage(
+                imageUrl: widget.productImageList[seleectedItem].imageUrl,
+              ),
+            )),
         SizedBox(
           height: 11.2.h,
           width: 100.w,
@@ -497,7 +524,6 @@ class _GallaryWidgetState extends State<GallaryWidget> {
             padding: EdgeInsets.only(left: 90, right: 90),
             scrollDirection: Axis.horizontal,
             itemCount: widget.productImageList.length,
-            
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
@@ -510,21 +536,19 @@ class _GallaryWidgetState extends State<GallaryWidget> {
                   width: 24.3.w,
                   height: 11.2.h,
                   decoration: BoxDecoration(
-                    color:
-                        LightColors.productMorePhotosBackGround,
+                    color: LightColors.productMorePhotosBackGround,
                     borderRadius: BorderRadius.circular(13),
                     border: Border.all(
-                        color: LightColors.tomanColor,
-                        width: 1,
-                        ),
+                      color: LightColors.tomanColor,
+                      width: 1,
+                    ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: CachedImage(
-                      imageUrl: widget.productImageList[index].imageUrl,
-                      fit: BoxFit.contain,
-                    )
-                  ),
+                      padding: const EdgeInsets.all(20.0),
+                      child: CachedImage(
+                        imageUrl: widget.productImageList[index].imageUrl,
+                        fit: BoxFit.contain,
+                      )),
                 ),
               );
             },
