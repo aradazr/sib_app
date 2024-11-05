@@ -9,7 +9,7 @@ import 'package:sib_app/utils/3api_exeption.dart';
 import '../model/category.dart';
 
 abstract class IDetailProductDatasource {
-  Future<List<ProductImage>> getGallery();
+  Future<List<ProductImage>> getGallery(String productId);
   Future<List<VariantType>> getVariantTypes();
   Future<List<Variant>> getVariant();
   Future<List<ProductVariant>> getProductVariants();
@@ -21,9 +21,9 @@ class DetailProductRemoteDatasource extends IDetailProductDatasource {
   final Dio _dio = locator.get();
 
   @override
-  Future<List<ProductImage>> getGallery() async {
+  Future<List<ProductImage>> getGallery(String productId) async {
     try {
-      Map<String, String> qParams = {'filter': 'product_id="78n4wqor3hhnkju"'};
+      Map<String, String> qParams = {'filter': 'product_id="$productId"'};
       var respones = await _dio.get('collections/gallery/records',
           queryParameters: qParams);
 

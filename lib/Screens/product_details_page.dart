@@ -18,7 +18,11 @@ import 'package:sib_app/main.dart';
 import 'package:sib_app/widgets/cached_image.dart';
 
 class ProductDetailsPage extends StatefulWidget {
-  const ProductDetailsPage({super.key});
+  Product? product;
+  ProductDetailsPage({
+    Key? key,
+     this.product,
+  }) : super(key: key);
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -27,7 +31,7 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void initState() {
-    BlocProvider.of<ProductBloc>(context).add(ProductInitializeEvent());
+    BlocProvider.of<ProductBloc>(context).add(ProductInitializeEvent(widget.product!.id));
     super.initState();
   }
 
@@ -70,258 +74,160 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ),
                 ),
                 SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (state is ProductDetailLoadingState) ...{
-                        Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      },
-                      SizedBox(
-                        height: 8.h,
-                      ),
-                      if (state is ProductDetailResponseState) ...{
-                        state.productImages.fold(
-                          (l) {
-                            return Text(l);
-                          },
-                          (productImageList) {
-                            return GallaryWidget(
-                              productImageList: productImageList,
-                            );
-                          },
-                        )
-                      },
-                      SizedBox(
-                        height: 2.4.h,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 17),
-                        child: Text(
-                          'LLA Not Active آیفون ۱۳ پرومکس دوسیم کارت مدل ',
-                          style: TextStyle(
-                              fontFamily: 'shbold',
-                              fontSize: 16.sp,
-                              color: LightColors.categoryText),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 1.4.h,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 17, top: 14),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              '4.3',
-                              style: TextStyle(
-                                  fontFamily: 'shbold',
-                                  fontSize: 15.sp,
-                                  color: LightColors.categoryText),
-                            ),
-                            SizedBox(
-                              width: 1.1.w,
-                            ),
-                            Image.asset(
-                              'assets/images/star.png',
-                              height: 15,
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 1.4.h,
-                      ),
-                      if (state is ProductDetailResponseState) ...{
-                        state.productVarient.fold(
-                          (l) {
-                            return Text(l);
-                          },
-                          (productVariantList) {
-                            return VariantContainer(
-                                productVariantList: productVariantList);
-                          },
-                        )
-                      },
-                      Padding(
-                        padding: const EdgeInsets.only(right: 17, top: 19),
-                        child: Text(
-                          'حافظه داخلی',
-                          style: TextStyle(
-                              fontFamily: 'shbold',
-                              fontSize: 17.sp,
-                              color: LightColors.categoryText),
-                        ),
-                      ),
-                      PopupMenuButton(
-                        padding: EdgeInsets.only(right: 17),
-                        offset: const Offset(-80, 10),
-                        color: Colors.white,
-                        icon: Container(
-                            height: 3.31.h,
-                            width: 27.43.w,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: LightColors.categoryText,
-                              ),
-                              borderRadius: BorderRadius.circular(4),
-                              color: LightColors.tomanColor,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Image.asset(
-                                  'assets/images/arrow_down.png',
-                                  height: 14,
-                                ),
-                                Text(
-                                  '۱۲۸ گیگ',
-                                  style: TextStyle(
-                                      fontFamily: 'shmid',
-                                      fontSize: 14.sp,
-                                      color: LightColors.categoryText),
-                                )
-                              ],
-                            )),
-                        itemBuilder: (context) {
-                          return <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
-                              labelTextStyle:
-                                  WidgetStatePropertyAll(TextStyle()),
-                              height: 40,
-                              value: 'delete_all',
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'گیگ 128',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: LightColors.tomanColor,
-                                    fontFamily: 'shmid',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const PopupMenuItem<String>(
-                              height: 40,
-                              value: 'delete_all',
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  'گیگ 256',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'shmid',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const PopupMenuItem<String>(
-                              height: 40,
-                              value: 'delete_all',
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  'گیگ 512',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'shmid',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            PopupMenuItem<String>(
-                              height: 40,
-                              value: 'delete_all',
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  'ترابایت 1',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'shmid',
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ];
+                  child: SizedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment:  MainAxisAlignment.center,
+                      children: [
+                        if (state is ProductDetailLoadingState) ...{
+                          Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         },
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 25, right: 17, top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Image.asset(
-                              'assets/images/double_arrow_left.png',
-                              height: 12,
-                            ),
-                            Text(
-                              'مشخصات فنی',
-                              style: TextStyle(
-                                fontFamily: 'sh',
-                                color: LightColors.categoryText,
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                          ],
+                        SizedBox(
+                          height: 11.h,
                         ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 25, right: 17, top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Image.asset(
-                              'assets/images/double_arrow_left.png',
-                              height: 12,
-                            ),
-                            Text(
-                              'توضیحات محصول',
-                              style: TextStyle(
-                                fontFamily: 'sh',
-                                color: LightColors.categoryText,
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                          ],
+                        if (state is ProductDetailResponseState) ...{
+                          state.productImages.fold(
+                            (l) {
+                              return Text(l);
+                            },
+                            (productImageList) {
+                              return GallaryWidget(
+                                defaultProductThumbnail: widget.product!.thumbnail,
+                                productImageList: productImageList,
+
+                              );
+                            },
+                          )
+                        },
+                        SizedBox(
+                          height: 2.4.h,
                         ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 25, right: 17, top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Image.asset(
-                              'assets/images/double_arrow_left.png',
-                              height: 12,
-                            ),
-                            Text(
-                              'نظرات کاربران',
-                              style: TextStyle(
-                                fontFamily: 'sh',
-                                color: LightColors.categoryText,
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(right: 17),
+                          child: Text(
+                            'LLA Not Active آیفون ۱۳ پرومکس دوسیم کارت مدل ',
+                            style: TextStyle(
+                                fontFamily: 'shbold',
+                                fontSize: 16.sp,
+                                color: LightColors.categoryText),
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 9.h,
-                      )
-                    ],
+                        SizedBox(
+                          height: 1.4.h,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 17, top: 14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                '4.3',
+                                style: TextStyle(
+                                    fontFamily: 'shbold',
+                                    fontSize: 15.sp,
+                                    color: LightColors.categoryText),
+                              ),
+                              SizedBox(
+                                width: 1.1.w,
+                              ),
+                              Image.asset(
+                                'assets/images/star.png',
+                                height: 15,
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 1.4.h,
+                        ),
+                        if (state is ProductDetailResponseState) ...{
+                          state.productVariant.fold(
+                            (l) {
+                              return Text(l);
+                            },
+                            (productVariantList) {
+                              return VariantContainerGeneraitor(
+                                  productVariantList: productVariantList);
+                            },
+                          )
+                        },
+                    
+                        //!11111111111111111111111111111111
+                    
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 25, right: 17, top: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset(
+                                'assets/images/double_arrow_left.png',
+                                height: 12,
+                              ),
+                              Text(
+                                'مشخصات فنی',
+                                style: TextStyle(
+                                  fontFamily: 'sh',
+                                  color: LightColors.categoryText,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 25, right: 17, top: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset(
+                                'assets/images/double_arrow_left.png',
+                                height: 12,
+                              ),
+                              Text(
+                                'توضیحات محصول',
+                                style: TextStyle(
+                                  fontFamily: 'sh',
+                                  color: LightColors.categoryText,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 25, right: 17, top: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset(
+                                'assets/images/double_arrow_left.png',
+                                height: 12,
+                              ),
+                              Text(
+                                'نظرات کاربران',
+                                style: TextStyle(
+                                  fontFamily: 'sh',
+                                  color: LightColors.categoryText,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 19.h,
+                        ),
+                        
+                      ],
+                    ),
                   ),
                 ),
+                
                 Positioned(
                   bottom: 0,
                   child: Container(
@@ -388,18 +294,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         ),
                         InkWell(
                           onTap: () async {
-                            IDetailProductRepository repository = locator.get();
-                            var response = await repository.getProuctImage();
-                            response.fold(
-                              (l) {},
-                              (r) {
-                                r.forEach(
-                                  (element) {
-                                    print(element.imageUrl);
-                                  },
-                                );
-                              },
-                            );
+                            
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -430,9 +325,29 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 }
 
-class VariantContainer extends StatelessWidget {
+class VariantContainerGeneraitor extends StatelessWidget {
   List<ProductVariant> productVariantList;
-  VariantContainer({super.key, required this.productVariantList});
+  VariantContainerGeneraitor({super.key, required this.productVariantList});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for(var productVariant in productVariantList)...{
+         if(productVariant.variantList.isNotEmpty)...{
+              VariantGeneratorChild(productVariant: productVariant),
+         }
+        }
+      ],
+    );
+  }
+}
+class VariantGeneratorChild extends StatelessWidget {
+  ProductVariant productVariant;
+  VariantGeneratorChild({
+    Key? key,
+    required this.productVariant,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -440,60 +355,36 @@ class VariantContainer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Padding(
-          padding:  EdgeInsets.only(right: 17, bottom: 12),
+          padding: EdgeInsets.only(right: 17, bottom: 12),
           child: Text(
-            productVariantList[0].variantType.title!,
+            productVariant.variantType.title!,
             style: TextStyle(
                 fontFamily: 'shbold',
                 fontSize: 17.sp,
                 color: LightColors.categoryText),
           ),
         ),
-        Padding(
-          padding:  EdgeInsets.only(right: 17),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ..._buildColorVareintOptions(productVariantList[0].variantList),
-            ]
-          ),
-        ),
+        if(productVariant.variantType.type == VariantTypeEnum.COLOR)...{
+         ColorVariantList(variantList: productVariant.variantList),
+        },
+        if(productVariant.variantType.type == VariantTypeEnum.STORAGE)...{
+         StorageVariantList(storageVariants: productVariant.variantList),
+        }
+         
+        
       ],
     );
   }
 }
 
-List<Widget> _buildColorVareintOptions(List<Variant> variantList) {
-  List<Widget> colorWidgets = [];
-
-  for (var colorVaraent in variantList) {
-
-    String categoryColor = 'ff${colorVaraent.value}';
-
-    int hexColor = int.parse(categoryColor, radix: 16);
-    var item = Padding(
-      padding: const EdgeInsets.only(right: 0),
-      child: Container(
-        margin: EdgeInsets.only(right: 10),
-        height: 4.h,
-        width: 8.w,
-        decoration: BoxDecoration(
-          color: Color(hexColor),
-          borderRadius: BorderRadius.circular(50),
-        ),
-      ),
-    );
-
-    colorWidgets.add(item);
-  }
-  return colorWidgets;
-}
-
 class GallaryWidget extends StatefulWidget {
   List<ProductImage> productImageList;
+  String defaultProductThumbnail;
+  
   GallaryWidget({
     Key? key,
     required this.productImageList,
+    required this.defaultProductThumbnail,
   }) : super(key: key);
 
   @override
@@ -514,10 +405,11 @@ class _GallaryWidgetState extends State<GallaryWidget> {
             child: SizedBox(
               height: 150,
               child: CachedImage(
-                imageUrl: widget.productImageList[seleectedItem].imageUrl,
+                imageUrl: (widget.productImageList.isEmpty) ? widget.defaultProductThumbnail : widget.productImageList[seleectedItem].imageUrl,
               ),
             )),
-        SizedBox(
+        if(widget.productImageList.isNotEmpty)...{
+          SizedBox(
           height: 11.2.h,
           width: 100.w,
           child: ListView.builder(
@@ -554,7 +446,115 @@ class _GallaryWidgetState extends State<GallaryWidget> {
             },
           ),
         ),
+
+        }
       ],
+    );
+  }
+}
+
+class ColorVariantList extends StatefulWidget {
+  List<Variant> variantList;
+
+  ColorVariantList({
+    Key? key,
+    required this.variantList,
+  }) : super(key: key);
+
+  @override
+  State<ColorVariantList> createState() => _ColorVariantListState();
+}
+
+class _ColorVariantListState extends State<ColorVariantList> {
+  int selectedColor = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SizedBox(
+        height: 4.h,
+        width: 100.w,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.variantList.length,
+          itemBuilder: (context, index) {
+            String categoryColor = 'ff${widget.variantList[index].value}';
+
+      int hexColor = int.parse(categoryColor, radix: 16);
+            return Padding(
+        padding: const EdgeInsets.only(right: 0),
+        child: GestureDetector(
+          onTap: () {
+            
+            setState(() {
+              selectedColor = index;  
+            });
+          },
+          child: Container(
+            margin: EdgeInsets.only(right: 10),
+            height: 4.h,
+            width: 8.w,
+            decoration: BoxDecoration(
+              border: (selectedColor == index) ? Border.all(color:  Colors.white, width: 2,strokeAlign: BorderSide.strokeAlignOutside):
+              Border.all(color:  Colors.white, width: 0,strokeAlign: BorderSide.strokeAlignOutside),
+              color: Color(hexColor),
+              borderRadius: BorderRadius.circular(50),
+            ),
+          ),
+        ),
+      );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class StorageVariantList extends StatefulWidget {
+
+  List<Variant> storageVariants;
+  
+  StorageVariantList({
+    Key? key,
+    required this.storageVariants,
+  }) : super(key: key);
+
+  @override
+  State<StorageVariantList> createState() => _StorageVariantListState();
+}
+
+class _StorageVariantListState extends State<StorageVariantList> {
+
+ 
+  
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SizedBox(
+        height: 4.h,
+        width: 100.w,
+        child: ListView.builder(
+          
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.storageVariants.length,
+          itemBuilder: (context, index) {
+            return Container(
+        
+        
+        height: 4.h,
+        width: 8.w,
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: Text(widget.storageVariants[index].value!,style: TextStyle(color: Colors.white),),
+      );
+          },
+        ),
+      ),
     );
   }
 }

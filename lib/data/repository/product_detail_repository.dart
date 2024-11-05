@@ -9,7 +9,7 @@ import 'package:sib_app/utils/3api_exeption.dart';
 import '../model/category.dart';
 
 abstract class IDetailProductRepository {
-  Future<Either<String, List<ProductImage>>> getProuctImage();
+  Future<Either<String, List<ProductImage>>> getProuctImage(String productId);
 
   Future<Either<String, List<VariantType>>> getVariantTypes();
 
@@ -22,10 +22,9 @@ class DetailProductRepository extends IDetailProductRepository {
   final IDetailProductDatasource _datasource = locator.get();
 
   @override
-  Future<Either<String, List<ProductImage>>> getProuctImage(
-     ) async {
+  Future<Either<String, List<ProductImage>>> getProuctImage(String productId) async {
     try {
-      var response = await _datasource.getGallery();
+      var response = await _datasource.getGallery(productId);
       return right(response);
     } on ApiException catch (ex) {
       return left(ex.message ?? 'خطا محتوای متنی ندارد');
