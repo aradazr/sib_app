@@ -11,8 +11,8 @@ import '../model/category.dart';
 abstract class IDetailProductDatasource {
   Future<List<ProductImage>> getGallery(String productId);
   Future<List<VariantType>> getVariantTypes();
-  Future<List<Variant>> getVariant();
-  Future<List<ProductVariant>> getProductVariants();
+  Future<List<Variant>> getVariant(String productId);
+  Future<List<ProductVariant>> getProductVariants(String productId);
   // Future<Category> getProductCategory(String categoryId);
   // Future<List<Property>> getProductProperties(String productId);
 }
@@ -53,9 +53,9 @@ class DetailProductRemoteDatasource extends IDetailProductDatasource {
   }
 
   @override
-  Future<List<Variant>> getVariant() async {
+  Future<List<Variant>> getVariant(String productId) async {
     try {
-      Map<String, String> qParams = {'filter': 'product_id="at0y1gm0t65j62j"'};
+      Map<String, String> qParams = {'filter': 'product_id="$productId"'};
 
       var respones = await _dio.get('collections/variants/records',
           queryParameters: qParams);
@@ -71,9 +71,9 @@ class DetailProductRemoteDatasource extends IDetailProductDatasource {
   }
 
   @override
-  Future<List<ProductVariant>> getProductVariants() async {
+  Future<List<ProductVariant>> getProductVariants(String productId) async {
     var variantTypeList = await getVariantTypes();
-    var variantList = await getVariant();
+    var variantList = await getVariant(productId);
 
     List<ProductVariant> productVariantList = [];
 
