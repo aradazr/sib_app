@@ -9,6 +9,7 @@ import 'package:sib_app/bloc/product/bloc/product_state.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/product.dart';
 import 'package:sib_app/data/model/product_image.dart';
+import 'package:sib_app/data/model/product_property.dart';
 import 'package:sib_app/data/model/product_varient.dart';
 import 'package:sib_app/data/model/varient.dart';
 import 'package:sib_app/data/model/varient_type.dart';
@@ -31,8 +32,8 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void initState() {
-    BlocProvider.of<ProductBloc>(context)
-        .add(ProductInitializeEvent(widget.product!.id));
+    BlocProvider.of<ProductBloc>(context).add(
+        ProductInitializeEvent(widget.product!.id, widget.product!.categoryId));
     super.initState();
   }
 
@@ -157,27 +158,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
                         //!11111111111111111111111111111111
 
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 25, right: 17, top: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.asset(
-                                'assets/images/double_arrow_left.png',
-                                height: 12,
-                              ),
-                              Text(
-                                'مشخصات فنی',
-                                style: TextStyle(
-                                  fontFamily: 'sh',
-                                  color: LightColors.categoryText,
-                                  fontSize: 15.sp,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        if (state is ProductDetailResponseState) ...{
+                          state.productProperties.fold(
+                            (l) {
+                              return Text(l);
+                            },
+                            (propertyList) {
+                              return ProductPropertys(propertyList);
+                            },
+                          )
+                        },
                         ProductDescription(widget.product!.description),
                         Padding(
                           padding: const EdgeInsets.only(
@@ -302,11 +292,102 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 }
 
+class ProductPropertys extends StatefulWidget {
+  List<Property> productPropertyList;
+  ProductPropertys(
+    this.productPropertyList, {
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<ProductPropertys> createState() => _ProductPropertysState();
+}
+
+class _ProductPropertysState extends State<ProductPropertys> {
+  bool isExpanded = false;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25, right: 17, top: 20),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isExpanded = !isExpanded;
+              });
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.asset(
+                  'assets/images/double_arrow_left.png',
+                  height: 12,
+                ),
+                Text(
+                  'مشخصات فنی',
+                  style: TextStyle(
+                    fontFamily: 'sh',
+                    color: LightColors.categoryText,
+                    fontSize: 15.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Visibility(
+            visible: isExpanded,
+            child: SizedBox(
+              height: 4.h,
+            ),
+          ),
+          Visibility(
+            visible: isExpanded,
+            child: Container(
+              height: 60.h,
+              width: 80.w,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                  border: Border.all(color: Colors.white, width: 1)),
+              child: SizedBox(
+                height: 40.h,
+                width: 80,
+                child: ListView.builder(
+                  
+                  itemCount: widget.productPropertyList.length,
+                  itemBuilder: (context, index) {
+                    var property = widget.productPropertyList[index];
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${property.value!} : ${property.title!}',
+                          textAlign: TextAlign.right,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'sh',
+                            fontSize: 14,
+                            height: 1.8,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class ProductDescription extends StatefulWidget {
-  String productDescription;
-   ProductDescription(
-    this.productDescription,
-    {
+  final String productDescription;
+  const ProductDescription(
+    this.productDescription, {
     super.key,
   });
 
@@ -315,14 +396,12 @@ class ProductDescription extends StatefulWidget {
 }
 
 class _ProductDescriptionState extends State<ProductDescription> {
-
-bool isExpanded = false;
+  bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-          left: 25, right: 17, top: 20),
+      padding: const EdgeInsets.only(left: 25, right: 17, top: 20),
       child: Column(
         children: [
           GestureDetector(
@@ -357,23 +436,25 @@ bool isExpanded = false;
           ),
           Visibility(
             visible: isExpanded,
-            child: Container(height: 60.h
-            ,width: 80.w,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.black,
-              border: Border.all(color: Colors.white,width: 1)
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                
-                widget.productDescription,style: TextStyle(
-                  fontFamily: 'sh',
-                  fontSize: 16,
-                  height: 1.5,
-                  color: Colors.white),textDirection: TextDirection.rtl,),
-            ),
+            child: Container(
+              height: 60.h,
+              width: 80.w,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                  border: Border.all(color: Colors.white, width: 1)),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.productDescription,
+                  style: TextStyle(
+                      fontFamily: 'sh',
+                      fontSize: 16,
+                      height: 1.5,
+                      color: Colors.white),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
             ),
           )
         ],

@@ -100,7 +100,9 @@ List<Widget> _buildScreens() {
       create: (context) => AuthBloc(),
       child: LoginPage(),
     ),
+    
     BasketShopPage(),
+
     BlocProvider(
       create: (context) => CategoryBloc(),
       child: CategoryPage(),

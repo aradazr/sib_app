@@ -4,10 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sib_app/data/datasource/1authentication_datasource.dart';
 import 'package:sib_app/data/datasource/banner_datasource.dart';
 import 'package:sib_app/data/datasource/category_datasource.dart';
+import 'package:sib_app/data/datasource/category_product_datasource.dart';
 import 'package:sib_app/data/datasource/product_datasource.dart';
 import 'package:sib_app/data/datasource/product_detail_datasource.dart';
 import 'package:sib_app/data/repository/4authentication_repository.dart';
 import 'package:sib_app/data/repository/banner_repository.dart';
+import 'package:sib_app/data/repository/category_product_repository.dart';
 import 'package:sib_app/data/repository/category_repository.dart';
 import 'package:sib_app/data/repository/product_detail_repository.dart';
 import 'package:sib_app/data/repository/products_repository.dart';
@@ -38,6 +40,9 @@ Future<void> getItInit() async {
   locator.registerFactory<IDetailProductDatasource>(
     () => DetailProductRemoteDatasource(),
   );
+  locator.registerFactory<ICategoryProductDatasource>(
+    () => CategoryProductRemoteDatasource(),
+  );
 
   //!---------------------------------------------------------------------
 
@@ -57,6 +62,10 @@ Future<void> getItInit() async {
   
   locator.registerFactory<IDetailProductRepository>(
     () => DetailProductRepository(),
+  );
+  
+  locator.registerFactory<ICategoryProductRepository>(
+    () => CategoryProductRepository(),
   );
 
   // await _initComponents();

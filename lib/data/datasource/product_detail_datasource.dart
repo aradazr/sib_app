@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:sib_app/data/model/product_image.dart';
+import 'package:sib_app/data/model/product_property.dart';
 import 'package:sib_app/data/model/product_varient.dart';
 import 'package:sib_app/data/model/varient.dart';
 import 'package:sib_app/data/model/varient_type.dart';
@@ -13,8 +14,8 @@ abstract class IDetailProductDatasource {
   Future<List<VariantType>> getVariantTypes();
   Future<List<Variant>> getVariant(String productId);
   Future<List<ProductVariant>> getProductVariants(String productId);
-  // Future<Category> getProductCategory(String categoryId);
-  // Future<List<Property>> getProductProperties(String productId);
+  Future<Category> getProductCategory(String categoryId);
+  Future<List<Property>> getProductProperties(String productId);
 }
 
 class DetailProductRemoteDatasource extends IDetailProductDatasource {
@@ -94,35 +95,35 @@ class DetailProductRemoteDatasource extends IDetailProductDatasource {
   }
 
 
-//   @override
-//   Future<Category> getProductCategory(String categoryId) async {
-//     try {
-//       Map<String, String> qParams = {'filter': 'id="$categoryId"'};
-//       var reponse = await _dio.get('collections/category/records',
-//           queryParameters: qParams);
-//       return Category.fromMapJson(reponse.data['items'][0]);
-//     } on DioError catch (ex) {
-//       throw ApiException(ex.response?.statusCode, ex.response?.data['message']);
-//     } catch (ex) {
-//       throw ApiException(0, 'unknown erorr');
-//     }
-//   }
+  @override
+  Future<Category> getProductCategory(String categoryId) async {
+    try {
+      Map<String, String> qParams = {'filter': 'id="$categoryId"'};
+      var reponse = await _dio.get('collections/category/records',
+          queryParameters: qParams);
+      return Category.fromMapJson(reponse.data['items'][0]);
+    } on DioError catch (ex) {
+      throw ApiException(ex.response?.statusCode, ex.response?.data['message']);
+    } catch (ex) {
+      throw ApiException(0, 'unknown erorr');
+    }
+  }
   
-//   @override
-//   Future<List<Property>> getProductProperties(String productId) async {
-//          try {
-//       Map<String, String> qParams = {'filter': 'product_id="$productId"'};
+  @override
+  Future<List<Property>> getProductProperties(String productId) async {
+         try {
+      Map<String, String> qParams = {'filter': 'product_id="$productId"'};
 
-//       var respones = await _dio.get('collections/properties/records',
-//           queryParameters: qParams);
+      var respones = await _dio.get('collections/properties/records',
+          queryParameters: qParams);
 
-//       return respones.data['items']
-//           .map<Property>((jsonObject) => Property.fromJson(jsonObject))
-//           .toList();
-//     } on DioError catch (ex) {
-//       throw ApiException(ex.response?.statusCode, ex.response?.data['message']);
-//     } catch (ex) {
-//       throw ApiException(0, 'unknown erorr');
-//     }
-//   }
+      return respones.data['items']
+          .map<Property>((jsonObject) => Property.fromJson(jsonObject))
+          .toList();
+    } on DioError catch (ex) {
+      throw ApiException(ex.response?.statusCode, ex.response?.data['message']);
+    } catch (ex) {
+      throw ApiException(0, 'unknown erorr');
+    }
+  }
 }
