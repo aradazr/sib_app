@@ -5,10 +5,12 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'package:sib_app/Screens/home_page.dart';
 import 'package:sib_app/Screens/product_details_page.dart';
+import 'package:sib_app/bloc/basket/bloc/basket_bloc.dart';
 import 'package:sib_app/bloc/product/bloc/product_bloc.dart';
 import 'package:sib_app/constans/custom_clip.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/product.dart';
+import 'package:sib_app/di/2di.dart';
 import 'package:sib_app/widgets/cached_image.dart';
 
 class ProductItem extends StatelessWidget {
@@ -27,8 +29,8 @@ class ProductItem extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => ProductBloc(),
+              builder: (context) => BlocProvider<BasketBloc>.value(
+                value: locator.get<BasketBloc>(),
                 child: ProductDetailsPage(product: product,),
               ),
             ),

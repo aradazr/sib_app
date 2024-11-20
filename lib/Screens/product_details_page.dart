@@ -1,12 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:sib_app/bloc/basket/bloc/basket_bloc.dart';
+import 'package:sib_app/bloc/basket/bloc/basket_event.dart';
 
 import 'package:sib_app/bloc/product/bloc/product_bloc.dart';
 import 'package:sib_app/bloc/product/bloc/product_event.dart';
 import 'package:sib_app/bloc/product/bloc/product_state.dart';
 import 'package:sib_app/constans/my_colors.dart';
+import 'package:sib_app/data/model/card_item.dart';
 import 'package:sib_app/data/model/product.dart';
 import 'package:sib_app/data/model/product_image.dart';
 import 'package:sib_app/data/model/product_property.dart';
@@ -31,19 +35,36 @@ class ProductDetailsPage extends StatefulWidget {
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
-  void initState() {
-    BlocProvider.of<ProductBloc>(context).add(
-        ProductInitializeEvent(widget.product!.id, widget.product!.categoryId));
-    super.initState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) {
+        var bloc = ProductBloc();
+        bloc.add(
+          ProductInitializeEvent(
+              widget.product!.id, widget.product!.categoryId),
+        );
+        return bloc;
+      },
+      child: DetailContentWidget(parentWidget: widget),
+    );
   }
+}
+
+class DetailContentWidget extends StatelessWidget {
+  const DetailContentWidget({
+    super.key,
+    required this.parentWidget,
+  });
+
+  final ProductDetailsPage parentWidget;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProductBloc, ProductState>(
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: LightColors.productPageBackground,
-          body: SafeArea(
+    return Scaffold(
+      backgroundColor: LightColors.productPageBackground,
+      body: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          return SafeArea(
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
@@ -97,7 +118,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             (productImageList) {
                               return GallaryWidget(
                                 defaultProductThumbnail:
-                                    widget.product!.thumbnail,
+                                    parentWidget.product!.thumbnail,
                                 productImageList: productImageList,
                               );
                             },
@@ -109,7 +130,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         Padding(
                           padding: const EdgeInsets.only(right: 17),
                           child: Text(
-                            widget.product!.name,
+                            parentWidget.product!.name,
                             style: TextStyle(
                                 fontFamily: 'shbold',
                                 fontSize: 16.sp,
@@ -168,7 +189,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             },
                           )
                         },
-                        ProductDescription(widget.product!.description),
+                        ProductDescription(parentWidget.product!.description),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 25, right: 17, top: 20),
@@ -262,7 +283,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           ],
                         ),
                         InkWell(
-                          onTap: () async {},
+                          onTap: () async {
+                            context
+                                .read<ProductBloc>()
+                                .add(ProductAddToBasket(parentWidget.product!));
+
+                                context.read<BasketBloc>().add(BasketFetchFromHiveEvent());
+                          },
                           child: Container(
                             alignment: Alignment.center,
                             height: 4.85.h,
@@ -285,9 +312,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 )
               ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -354,7 +381,6 @@ class _ProductPropertysState extends State<ProductPropertys> {
                 height: 40.h,
                 width: 80,
                 child: ListView.builder(
-                  
                   itemCount: widget.productPropertyList.length,
                   itemBuilder: (context, index) {
                     var property = widget.productPropertyList[index];

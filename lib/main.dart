@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sib_app/Screens/basket_shop_page.dart';
@@ -15,13 +16,20 @@ import 'package:sib_app/Screens/my_profile_page.dart';
 import 'package:sib_app/Screens/product_details_page.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
 import 'package:sib_app/bloc/banner/home/home_bloc.dart';
+import 'package:sib_app/bloc/basket/bloc/basket_bloc.dart';
+import 'package:sib_app/bloc/basket/bloc/basket_event.dart';
 import 'package:sib_app/bloc/category/bloc/category_bloc.dart';
 import 'package:sib_app/constans/my_colors.dart';
+import 'package:sib_app/data/model/card_item.dart';
 import 'package:sib_app/di/2di.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(BasketItemAdapter());
+  await Hive.openBox<BasketItem>('CardBox');
   await getItInit();
+
   runApp(const MyApp());
 }
 
@@ -100,9 +108,14 @@ List<Widget> _buildScreens() {
       create: (context) => AuthBloc(),
       child: LoginPage(),
     ),
-    
-    BasketShopPage(),
-
+    BlocProvider(
+      create: (context) {
+        var bloc = locator.get<BasketBloc>();
+        bloc.add(BasketFetchFromHiveEvent());
+        return bloc;
+      },
+      child: BasketShopPage(),
+    ),
     BlocProvider(
       create: (context) => CategoryBloc(),
       child: CategoryPage(),
