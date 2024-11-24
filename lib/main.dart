@@ -16,6 +16,7 @@ import 'package:sib_app/Screens/my_profile_page.dart';
 import 'package:sib_app/Screens/product_details_page.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
 import 'package:sib_app/bloc/banner/home/home_bloc.dart';
+import 'package:sib_app/bloc/banner/home/home_event.dart';
 import 'package:sib_app/bloc/basket/bloc/basket_bloc.dart';
 import 'package:sib_app/bloc/basket/bloc/basket_event.dart';
 import 'package:sib_app/bloc/category/bloc/category_bloc.dart';
@@ -121,7 +122,11 @@ List<Widget> _buildScreens() {
       child: CategoryPage(),
     ),
     BlocProvider(
-      create: (context) => HomeBloc(),
+      create: (context) {
+        var bloc = HomeBloc();
+        bloc.add(HomeGetInitilzeData());
+        return bloc;
+      },
       child: HomePage(),
     ),
   ];

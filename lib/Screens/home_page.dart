@@ -2,6 +2,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sib_app/widgets/category_widget.dart';
 import 'package:sib_app/widgets/get_best_seller_product_widget.dart';
@@ -22,23 +23,10 @@ import 'package:sib_app/widgets/most_see_item.dart';
 import 'package:sib_app/widgets/product_item.dart';
 import 'package:sib_app/widgets/my_app_bar.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   final PageController controller = PageController();
-
-  @override
-  void initState() {
-    BlocProvider.of<HomeBloc>(context).add(
-      HomeGetInitilzeData(),
-    );
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,100 +35,117 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: LightColors.homePageBackground,
         body: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: MyAppBar(
-                    textPadding: EdgeInsets.only(right: 26),
-                    appBarTitle: 'جست و جوی محصولات',
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    leftIcon: 'assets/images/search.png',
-                    showLeftIcon: true,
-                    fontFamily: 'sh',
-                    rightIcon: '',
-                    showRightIcon: false,
-                  ),
+            if (state is HomeLoadingState) {
+              return Center(
+                child: SpinKitFadingCircle(
+                  color: Colors.white,
+                  size: 50.0,
                 ),
-                if (state is HomeLoadingState) ...[
-                  SliverToBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator(),
+              );
+            } else {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  BlocProvider.of<HomeBloc>(context).add(HomeGetInitilzeData());
+                },
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: MyAppBar(
+                        textPadding: EdgeInsets.only(right: 26),
+                        appBarTitle: 'جست و جوی محصولات',
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        leftIcon: 'assets/images/search.png',
+                        showLeftIcon: true,
+                        fontFamily: 'sh',
+                        rightIcon: '',
+                        showRightIcon: false,
+                      ),
                     ),
-                  ),
-                ],
-                if (state is HomeRequestSuccessState) ...[
-                  state.bannerList.fold(
-                    (error) {
-                      return SliverToBoxAdapter(
-                        child: Text(error),
-                      );
-                    },
-                    (listBanners) {
-                      return SliverToBoxAdapter(
-                        child: BannerSlider(
-                          controller: controller,
-                          bannersList: listBanners,
+                    if (state is HomeLoadingState) ...[
+                      SliverToBoxAdapter(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: SpinKitFadingCircle(
+                                color: Colors.white,
+                                size: 50.0,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  )
-                ],
-                if (state is HomeRequestSuccessState) ...[
-                  state.categoryList.fold(
-                    (error) {
-                      return SliverToBoxAdapter(
-                        child: Text(error),
-                      );
-                    },
-                    (listCategory) {
-                      return SliverToBoxAdapter(
-                        child: CategoryWidget(listCategories: listCategory),
-                      );
-                    },
-                  )
-                ],
-                if (state is HomeRequestSuccessState) ...[
-                  state.bestSellerProductList.fold(
-                    (error) {
-                      return SliverToBoxAdapter(
-                        child: Text(error),
-                      );
-                    },
-                    (listProduct) { 
-                      return SliverToBoxAdapter(
-                  child: GetBestSellerProduct(productList: listProduct,),
-                );
-                    },
-                  )
-                ],
-                if (state is HomeRequestSuccessState) ...[
-                  state.hotestProductList.fold(
-                    (error) {
-                      return SliverToBoxAdapter(
-                        child: Text(error),
-                      );
-                    },
-                    (listProduct) { 
-                      return SliverToBoxAdapter(
-                  child: MostSeeItem(productList: listProduct,),
-                );
-                    },
-                  )
-                ],
-
-
-                
-                
-              ],
-            );
+                      ),
+                    ],
+                    if (state is HomeRequestSuccessState) ...[
+                      state.bannerList.fold(
+                        (error) {
+                          return SliverToBoxAdapter(
+                            child: Text(error),
+                          );
+                        },
+                        (listBanners) {
+                          return SliverToBoxAdapter(
+                            child: BannerSlider(
+                              controller: controller,
+                              bannersList: listBanners,
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                    if (state is HomeRequestSuccessState) ...[
+                      state.categoryList.fold(
+                        (error) {
+                          return SliverToBoxAdapter(
+                            child: Text(error),
+                          );
+                        },
+                        (listCategory) {
+                          return SliverToBoxAdapter(
+                            child: CategoryWidget(listCategories: listCategory),
+                          );
+                        },
+                      )
+                    ],
+                    if (state is HomeRequestSuccessState) ...[
+                      state.bestSellerProductList.fold(
+                        (error) {
+                          return SliverToBoxAdapter(
+                            child: Text(error),
+                          );
+                        },
+                        (listProduct) {
+                          return SliverToBoxAdapter(
+                            child: GetBestSellerProduct(
+                              productList: listProduct,
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                    if (state is HomeRequestSuccessState) ...[
+                      state.hotestProductList.fold(
+                        (error) {
+                          return SliverToBoxAdapter(
+                            child: Text(error),
+                          );
+                        },
+                        (listProduct) {
+                          return SliverToBoxAdapter(
+                            child: MostSeeItem(
+                              productList: listProduct,
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ],
+                ),
+              );
+            }
           },
         ),
       ),
     );
   }
 }
-
-
-
-
-

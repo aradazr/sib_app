@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'package:sib_app/Screens/home_page.dart';
@@ -11,6 +12,7 @@ import 'package:sib_app/constans/custom_clip.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/product.dart';
 import 'package:sib_app/di/2di.dart';
+import 'package:sib_app/utils/extension/double_parsing.dart';
 import 'package:sib_app/widgets/cached_image.dart';
 
 class ProductItem extends StatelessWidget {
@@ -149,7 +151,7 @@ class ProductItem extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              product.price.toString(),
+                              product.price.formatPrice().toString(),
                               style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
                                   fontFamily: 'shmid',
@@ -160,7 +162,7 @@ class ProductItem extends StatelessWidget {
                               height: .2.h,
                             ),
                             Text(
-                              product.realPrice.toString(),
+                              product.realPrice!.formatPrice().toString(),
                               style: TextStyle(
                                   fontSize: 15.sp,
                                   fontFamily: 'shmid',
@@ -197,3 +199,4 @@ class ProductItem extends StatelessWidget {
     );
   }
 }
+
