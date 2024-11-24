@@ -151,7 +151,7 @@ class ProductItem extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              product.price.formatPrice().toString(),
+                              product.price.formatPrice(),
                               style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
                                   fontFamily: 'shmid',
@@ -162,7 +162,7 @@ class ProductItem extends StatelessWidget {
                               height: .2.h,
                             ),
                             Text(
-                              product.realPrice!.formatPrice().toString(),
+                              product.realPrice!.formatPrice(),
                               style: TextStyle(
                                   fontSize: 15.sp,
                                   fontFamily: 'shmid',
