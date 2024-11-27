@@ -7,6 +7,7 @@ import 'package:sib_app/data/datasource/banner_datasource.dart';
 import 'package:sib_app/data/datasource/basket_datasource.dart';
 import 'package:sib_app/data/datasource/category_datasource.dart';
 import 'package:sib_app/data/datasource/category_product_datasource.dart';
+import 'package:sib_app/data/datasource/comment_datasource.dart';
 import 'package:sib_app/data/datasource/product_datasource.dart';
 import 'package:sib_app/data/datasource/product_detail_datasource.dart';
 import 'package:sib_app/data/repository/4authentication_repository.dart';
@@ -14,6 +15,7 @@ import 'package:sib_app/data/repository/banner_repository.dart';
 import 'package:sib_app/data/repository/basket_repository.dart';
 import 'package:sib_app/data/repository/category_product_repository.dart';
 import 'package:sib_app/data/repository/category_repository.dart';
+import 'package:sib_app/data/repository/comment_repository.dart';
 import 'package:sib_app/data/repository/product_detail_repository.dart';
 import 'package:sib_app/data/repository/products_repository.dart';
 import 'package:sib_app/utils/payment_handler.dart';
@@ -36,6 +38,7 @@ Future<void> getItInit() async {
 
 Future<void> _initComponents() async {
   locator.registerSingleton<UrlHandler>(UrlLauncher());
+  
   locator
       .registerSingleton<PaymentHandler>(ZarinpalPaymentHandler(locator.get()));
 
@@ -71,6 +74,9 @@ void _initDatasoruces() {
   locator.registerFactory<IBasketDataSource>(
     () => BasketLocalDataSource(),
   );
+  locator.registerFactory<ICommentDatasource>(
+    () => CommentRemoteDatasource(),
+  );
 }
 
 void _initRepositories() {
@@ -84,5 +90,5 @@ void _initRepositories() {
       () => CategoryProductRepository());
   locator.registerFactory<IBasketRepository>(() => BasketRepository());
 
-  // locator.registerFactory<ICommentRepository>(() => CommentRepository());
+  locator.registerFactory<ICommentRepository>(() => CommentRepository());
 }

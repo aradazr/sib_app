@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:sib_app/Screens/home_page.dart';
 import 'package:sib_app/bloc/basket/bloc/basket_bloc.dart';
 import 'package:sib_app/bloc/basket/bloc/basket_event.dart';
 
@@ -20,7 +22,9 @@ import 'package:sib_app/data/model/varient_type.dart';
 import 'package:sib_app/data/repository/product_detail_repository.dart';
 import 'package:sib_app/di/2di.dart';
 import 'package:sib_app/main.dart';
+import 'package:sib_app/utils/extension/double_parsing.dart';
 import 'package:sib_app/widgets/cached_image.dart';
+import 'package:sib_app/widgets/loading_circule_widget.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   Product? product;
@@ -68,7 +72,8 @@ class DetailContentWidget extends StatelessWidget {
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
-                Positioned(
+                if(state is ProductDetailResponseState)...{
+                  Positioned(
                   bottom: 0,
                   child: SizedBox(
                       width: 100.w,
@@ -89,24 +94,31 @@ class DetailContentWidget extends StatelessWidget {
                         'assets/images/empty_heart.png',
                         height: 27,
                       ),
-                      Image.asset(
-                        'assets/images/back.png',
-                        height: 27,
+                      InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage()
+                          ),
+                        ),
+                        child: Image.asset(
+                          'assets/images/back.png',
+                          height: 27,
+                        ),
                       ),
                     ],
                   ),
                 ),
+                },
+                if (state is ProductDetailLoadingState) ...{
+                  LoadingCirculeWidget(),
+                },
                 SingleChildScrollView(
                   child: SizedBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (state is ProductDetailLoadingState) ...{
-                          Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        },
                         SizedBox(
                           height: 11.h,
                         ),
@@ -122,9 +134,11 @@ class DetailContentWidget extends StatelessWidget {
                                 productImageList: productImageList,
                               );
                             },
+                            
                           )
                         },
-                        SizedBox(
+                        if(state is ProductDetailResponseState)...{
+                                SizedBox(
                           height: 2.4.h,
                         ),
                         Padding(
@@ -165,6 +179,8 @@ class DetailContentWidget extends StatelessWidget {
                         SizedBox(
                           height: 1.4.h,
                         ),
+                        },
+                        
                         if (state is ProductDetailResponseState) ...{
                           state.productVariant.fold(
                             (l) {
@@ -189,7 +205,9 @@ class DetailContentWidget extends StatelessWidget {
                             },
                           )
                         },
-                        ProductDescription(parentWidget.product!.description),
+                        if (state is ProductDetailResponseState) ...{
+                          
+                          ProductDescription(parentWidget.product!.description),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 25, right: 17, top: 20),
@@ -211,6 +229,8 @@ class DetailContentWidget extends StatelessWidget {
                             ],
                           ),
                         ),
+                        },
+                        
                         SizedBox(
                           height: 19.h,
                         ),
@@ -218,7 +238,8 @@ class DetailContentWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
+                if(state is ProductDetailResponseState)...{
+                  Positioned(
                   bottom: 0,
                   child: Container(
                     alignment: Alignment.center,
@@ -236,7 +257,8 @@ class DetailContentWidget extends StatelessWidget {
                             Directionality(
                               textDirection: TextDirection.rtl,
                               child: Text(
-                                '۱۶٬۳۵۰٬۰۰۰ تومان',
+                                parentWidget.product!.realPrice!.formatPrice(),
+                                
                                 style: TextStyle(
                                     fontFamily: 'shmid',
                                     fontSize: 16.sp,
@@ -249,7 +271,7 @@ class DetailContentWidget extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  '۱۷٬۸۰۰٬۰۰۰',
+                                  parentWidget.product!.price.formatPrice(),
                                   style: TextStyle(
                                       decoration: TextDecoration.lineThrough,
                                       color: LightColors.categoryText,
@@ -288,7 +310,9 @@ class DetailContentWidget extends StatelessWidget {
                                 .read<ProductBloc>()
                                 .add(ProductAddToBasket(parentWidget.product!));
 
-                                context.read<BasketBloc>().add(BasketFetchFromHiveEvent());
+                            context
+                                .read<BasketBloc>()
+                                .add(BasketFetchFromHiveEvent());
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -310,6 +334,7 @@ class DetailContentWidget extends StatelessWidget {
                     ),
                   ),
                 )
+                }
               ],
             ),
           );
@@ -318,6 +343,8 @@ class DetailContentWidget extends StatelessWidget {
     );
   }
 }
+
+
 
 class ProductPropertys extends StatefulWidget {
   List<Property> productPropertyList;

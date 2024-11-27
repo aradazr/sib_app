@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sib_app/widgets/category_widget.dart';
 import 'package:sib_app/widgets/get_best_seller_product_widget.dart';
+import 'package:sib_app/widgets/loading_circule_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:sib_app/Screens/category_page.dart';
@@ -63,17 +64,7 @@ class HomePage extends StatelessWidget {
                     ),
                     if (state is HomeLoadingState) ...[
                       SliverToBoxAdapter(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Center(
-                              child: SpinKitFadingCircle(
-                                color: Colors.white,
-                                size: 50.0,
-                              ),
-                            ),
-                          ],
-                        ),
+                        child: LoadingCirculeWidget()
                       ),
                     ],
                     if (state is HomeRequestSuccessState) ...[
