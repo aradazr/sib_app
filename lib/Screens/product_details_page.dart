@@ -7,6 +7,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sib_app/Screens/home_page.dart';
 import 'package:sib_app/bloc/basket/bloc/basket_bloc.dart';
 import 'package:sib_app/bloc/basket/bloc/basket_event.dart';
+import 'package:sib_app/bloc/comment/bloc/comment_bloc.dart';
 
 import 'package:sib_app/bloc/product/bloc/product_bloc.dart';
 import 'package:sib_app/bloc/product/bloc/product_event.dart';
@@ -72,43 +73,41 @@ class DetailContentWidget extends StatelessWidget {
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
-                if(state is ProductDetailResponseState)...{
+                if (state is ProductDetailResponseState) ...{
                   Positioned(
-                  bottom: 0,
-                  child: SizedBox(
-                      width: 100.w,
-                      child: Image.asset(
-                        'assets/images/aaaa.png',
-                        height: 620,
-                        fit: BoxFit.fill,
-                      )),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 27, vertical: 25),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset(
-                        'assets/images/empty_heart.png',
-                        height: 27,
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage()
-                          ),
-                        ),
+                    bottom: 0,
+                    child: SizedBox(
+                        width: 100.w,
                         child: Image.asset(
-                          'assets/images/back.png',
+                          'assets/images/aaaa.png',
+                          height: 620,
+                          fit: BoxFit.fill,
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 27, vertical: 25),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          'assets/images/empty_heart.png',
                           height: 27,
                         ),
-                      ),
-                    ],
+                        InkWell(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          ),
+                          child: Image.asset(
+                            'assets/images/back.png',
+                            height: 27,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 },
                 if (state is ProductDetailLoadingState) ...{
                   LoadingCirculeWidget(),
@@ -134,53 +133,52 @@ class DetailContentWidget extends StatelessWidget {
                                 productImageList: productImageList,
                               );
                             },
-                            
                           )
                         },
-                        if(state is ProductDetailResponseState)...{
+                        if (state is ProductDetailResponseState) ...{
+                          SizedBox(
+                            height: 2.4.h,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 17),
+                            child: Text(
+                              parentWidget.product!.name,
+                              style: TextStyle(
+                                  fontFamily: 'shbold',
+                                  fontSize: 16.sp,
+                                  color: LightColors.categoryText),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 1.4.h,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 17, top: 14),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '4.3',
+                                  style: TextStyle(
+                                      fontFamily: 'shbold',
+                                      fontSize: 15.sp,
+                                      color: LightColors.categoryText),
+                                ),
                                 SizedBox(
-                          height: 2.4.h,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 17),
-                          child: Text(
-                            parentWidget.product!.name,
-                            style: TextStyle(
-                                fontFamily: 'shbold',
-                                fontSize: 16.sp,
-                                color: LightColors.categoryText),
+                                  width: 1.1.w,
+                                ),
+                                Image.asset(
+                                  'assets/images/star.png',
+                                  height: 15,
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 1.4.h,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 17, top: 14),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                '4.3',
-                                style: TextStyle(
-                                    fontFamily: 'shbold',
-                                    fontSize: 15.sp,
-                                    color: LightColors.categoryText),
-                              ),
-                              SizedBox(
-                                width: 1.1.w,
-                              ),
-                              Image.asset(
-                                'assets/images/star.png',
-                                height: 15,
-                              )
-                            ],
+                          SizedBox(
+                            height: 1.4.h,
                           ),
-                        ),
-                        SizedBox(
-                          height: 1.4.h,
-                        ),
                         },
-                        
+
                         if (state is ProductDetailResponseState) ...{
                           state.productVariant.fold(
                             (l) {
@@ -206,31 +204,55 @@ class DetailContentWidget extends StatelessWidget {
                           )
                         },
                         if (state is ProductDetailResponseState) ...{
-                          
                           ProductDescription(parentWidget.product!.description),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 25, right: 17, top: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.asset(
-                                'assets/images/double_arrow_left.png',
-                                height: 12,
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 25, right: 17, top: 20),
+                            child: GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return BlocProvider(
+                                      create: (context) {
+                                        final bloc = CommentBloc(locator.get());
+                                        bloc.add(CommentInitilzeEvent(
+                                            parentWidget.product!.id));
+                                        return bloc;
+                                      },
+                                      child: DraggableScrollableSheet(
+                                        initialChildSize: 0.5,
+                                        minChildSize: 0.2,
+                                        maxChildSize: 0.7,
+                                        builder: (context, scrollController) {
+                                        return CommentBottomSheet(scrollController);
+                                      },),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/double_arrow_left.png',
+                                    height: 12,
+                                  ),
+                                  Text(
+                                    'نظرات کاربران',
+                                    style: TextStyle(
+                                      fontFamily: 'sh',
+                                      color: LightColors.categoryText,
+                                      fontSize: 15.sp,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'نظرات کاربران',
-                                style: TextStyle(
-                                  fontFamily: 'sh',
-                                  color: LightColors.categoryText,
-                                  fontSize: 15.sp,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
                         },
-                        
+
                         SizedBox(
                           height: 19.h,
                         ),
@@ -238,102 +260,103 @@ class DetailContentWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                if(state is ProductDetailResponseState)...{
+                if (state is ProductDetailResponseState) ...{
                   Positioned(
-                  bottom: 0,
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 8.41.h,
-                    width: 100.w,
-                    decoration:
-                        BoxDecoration(color: LightColors.showPriceContainer),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Directionality(
-                              textDirection: TextDirection.rtl,
+                    bottom: 0,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 8.41.h,
+                      width: 100.w,
+                      decoration:
+                          BoxDecoration(color: LightColors.showPriceContainer),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text(
+                                  parentWidget.product!.realPrice!
+                                      .formatPrice(),
+                                  style: TextStyle(
+                                      fontFamily: 'shmid',
+                                      fontSize: 16.sp,
+                                      color: LightColors.categoryText),
+                                ),
+                              ),
+                              SizedBox(
+                                height: .5.h,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    parentWidget.product!.price.formatPrice(),
+                                    style: TextStyle(
+                                        decoration: TextDecoration.lineThrough,
+                                        color: LightColors.categoryText,
+                                        fontSize: 14.sp,
+                                        fontFamily: 'shmid',
+                                        decorationColor:
+                                            LightColors.categoryText,
+                                        decorationStyle:
+                                            TextDecorationStyle.solid,
+                                        decorationThickness: 3),
+                                  ),
+                                  SizedBox(
+                                    width: 1.4.w,
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: 2.h,
+                                    width: 6.w,
+                                    decoration: BoxDecoration(
+                                        color: LightColors.discountContainer,
+                                        borderRadius:
+                                            BorderRadius.circular(7.5)),
+                                    child: Text(
+                                      '%۳',
+                                      style: TextStyle(
+                                          fontFamily: 'shbold',
+                                          fontSize: 13.sp,
+                                          color: LightColors.categoryText),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              context.read<ProductBloc>().add(
+                                  ProductAddToBasket(parentWidget.product!));
+
+                              context
+                                  .read<BasketBloc>()
+                                  .add(BasketFetchFromHiveEvent());
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 4.85.h,
+                              width: 28.w,
+                              decoration: BoxDecoration(
+                                  color: LightColors.showPriceInsideContainer,
+                                  borderRadius: BorderRadius.circular(8)),
                               child: Text(
-                                parentWidget.product!.realPrice!.formatPrice(),
-                                
+                                'اضافه به سبد',
                                 style: TextStyle(
                                     fontFamily: 'shmid',
-                                    fontSize: 16.sp,
+                                    fontSize: 15.sp,
                                     color: LightColors.categoryText),
                               ),
                             ),
-                            SizedBox(
-                              height: .5.h,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  parentWidget.product!.price.formatPrice(),
-                                  style: TextStyle(
-                                      decoration: TextDecoration.lineThrough,
-                                      color: LightColors.categoryText,
-                                      fontSize: 14.sp,
-                                      fontFamily: 'shmid',
-                                      decorationColor: LightColors.categoryText,
-                                      decorationStyle:
-                                          TextDecorationStyle.solid,
-                                      decorationThickness: 3),
-                                ),
-                                SizedBox(
-                                  width: 1.4.w,
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  height: 2.h,
-                                  width: 6.w,
-                                  decoration: BoxDecoration(
-                                      color: LightColors.discountContainer,
-                                      borderRadius: BorderRadius.circular(7.5)),
-                                  child: Text(
-                                    '%۳',
-                                    style: TextStyle(
-                                        fontFamily: 'shbold',
-                                        fontSize: 13.sp,
-                                        color: LightColors.categoryText),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            context
-                                .read<ProductBloc>()
-                                .add(ProductAddToBasket(parentWidget.product!));
-
-                            context
-                                .read<BasketBloc>()
-                                .add(BasketFetchFromHiveEvent());
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 4.85.h,
-                            width: 28.w,
-                            decoration: BoxDecoration(
-                                color: LightColors.showPriceInsideContainer,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Text(
-                              'اضافه به سبد',
-                              style: TextStyle(
-                                  fontFamily: 'shmid',
-                                  fontSize: 15.sp,
-                                  color: LightColors.categoryText),
-                            ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                )
+                  )
                 }
               ],
             ),
@@ -344,7 +367,55 @@ class DetailContentWidget extends StatelessWidget {
   }
 }
 
-
+class CommentBottomSheet extends StatelessWidget {
+  CommentBottomSheet(
+    this.controller, {
+    super.key,
+  });
+  ScrollController controller;
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CommentBloc, CommentState>(
+      builder: (context, state) {
+        return CustomScrollView(
+          controller: controller,
+          slivers: [
+            if (state is CommentLoading) ...{
+              SliverToBoxAdapter(
+                child: SpinKitCircle(
+                  color: Colors.blue,
+                  size: 50.0,
+                ),
+              ),
+            },
+            if (state is CommentResponse) ...{
+              state.response.fold(
+                (l) {
+                  return Text('error');
+                },
+                (commentList) {
+                  if (commentList.isEmpty) {
+                    return SliverToBoxAdapter(
+                      child: Text('نظری ثبت نشده است'),
+                    );
+                  }
+                  return SliverList(
+                    
+                    delegate: SliverChildBuilderDelegate(
+                      
+                      (context, index) {
+                      return Text(commentList[index].text);
+                    }, childCount: commentList.length),
+                  );
+                },
+              )
+            }
+          ],
+        );
+      },
+    );
+  }
+}
 
 class ProductPropertys extends StatefulWidget {
   List<Property> productPropertyList;
