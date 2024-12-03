@@ -21,8 +21,11 @@ class CommentRemoteDatasource extends ICommentDatasource {
     };
 
     try {
-      var respones = await _dio.get('collections/comment/records', queryParameters: qParams);
-      return respones.data['items'].map<Comment>((jsonObject) => Comment.fromMapJson(jsonObject)).toList();
+      var respones = await _dio.get('collections/comment/records',
+          queryParameters: qParams);
+      return respones.data['items']
+          .map<Comment>((jsonObject) => Comment.fromMapJson(jsonObject))
+          .toList();
     } on DioException catch (ex) {
       throw ApiException(ex.response?.statusCode, ex.response?.data['message']);
     } catch (ex) {
@@ -33,8 +36,10 @@ class CommentRemoteDatasource extends ICommentDatasource {
   @override
   Future<void> postComment(String productId, String comment) async {
     try {
-      final response = await _dio
-          .post('collections/comment/records', data: {'text': comment, 'user_id': userId, 'product_id': productId});
+      final response = await _dio.post(
+        'collections/comment/records',
+        data: {'text': comment, 'user_id': userId, 'product_id': productId},
+      );
     } on DioException catch (ex) {
       throw ApiException(ex.response?.statusCode, ex.response?.data['message']);
     } catch (ex) {

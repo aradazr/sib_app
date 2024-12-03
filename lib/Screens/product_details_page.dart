@@ -225,8 +225,10 @@ class DetailContentWidget extends StatelessWidget {
                                         minChildSize: 0.2,
                                         maxChildSize: 0.7,
                                         builder: (context, scrollController) {
-                                        return CommentBottomSheet(scrollController);
-                                      },),
+                                          return CommentBottomSheet(
+                                              scrollController);
+                                        },
+                                      ),
                                     );
                                   },
                                 );
@@ -400,11 +402,63 @@ class CommentBottomSheet extends StatelessWidget {
                     );
                   }
                   return SliverList(
-                    
-                    delegate: SliverChildBuilderDelegate(
-                      
-                      (context, index) {
-                      return Text(commentList[index].text);
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return Container(
+                        alignment: Alignment.centerRight,
+                        margin: EdgeInsets.all(8),
+                        height: 60,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    commentList[index].username.isEmpty ?
+                                    Directionality(
+                                      textDirection: TextDirection.rtl,
+                                      child: Text(
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        'کاربر:',
+                                        
+                                        textDirection: TextDirection.rtl,
+                                      ),
+                                    ):
+                                    Text(
+                                      '${commentList[index].username}:',
+                                      textAlign: TextAlign.right,
+                                      textDirection: TextDirection.rtl,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text(
+                                      commentList[index].text,
+                                      textAlign: TextAlign.right,
+                                      textDirection: TextDirection.rtl,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              const CircleAvatar(
+                                backgroundColor: Colors.blue,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
                     }, childCount: commentList.length),
                   );
                 },
