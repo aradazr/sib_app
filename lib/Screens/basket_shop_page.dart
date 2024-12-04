@@ -8,6 +8,7 @@ import 'package:sib_app/bloc/basket/bloc/basket_state.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/card_item.dart';
 import 'package:sib_app/main.dart';
+import 'package:sib_app/utils/extension/double_parsing.dart';
 import 'package:sib_app/widgets/my_app_bar.dart';
 import 'package:sib_app/widgets/product_in_shopping_basket.dart';
 import 'package:uni_links3/uni_links.dart';
@@ -72,7 +73,7 @@ class _BasketShopPageState extends State<BasketShopPage> {
                                 childCount: basketItemList.length,
                                 (context, index) {
                                   return ProductInShoppingBasket(
-                                    basketItemList[index],
+                                    basketItemList[index],index: index,
                                   );
                                 },
                               ),
@@ -116,7 +117,7 @@ class _BasketShopPageState extends State<BasketShopPage> {
                         child: Text(
                           state.basketFinalPrice == 0
                               ? 'سبد خرید خالی است'
-                              : '${state.basketFinalPrice}  :مجموع',
+                              : '${state.basketFinalPrice.formatPrice()}  :مجموع',
                           style: TextStyle(
                             fontFamily: 'shbold',
                             fontSize: 17.sp,

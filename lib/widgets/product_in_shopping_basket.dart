@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:sib_app/Screens/basket_shop_page.dart';
+import 'package:sib_app/bloc/basket/bloc/basket_bloc.dart';
+import 'package:sib_app/bloc/basket/bloc/basket_event.dart';
 import 'package:sib_app/constans/my_colors.dart';
 import 'package:sib_app/data/model/card_item.dart';
+import 'package:sib_app/utils/extension/double_parsing.dart';
 import 'package:sib_app/utils/extension/string_extension.dart';
 import 'package:sib_app/widgets/cached_image.dart';
 
@@ -11,9 +16,10 @@ class ProductInShoppingBasket extends StatelessWidget {
    ProductInShoppingBasket(
     this.basketItem,
     {
+      required this.index,
     super.key,
   });
-
+final int index;
   @override
   Widget build(BuildContext context) {
     
@@ -88,7 +94,7 @@ class ProductInShoppingBasket extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      basketItem.realPrice.toString(),
+                      basketItem.realPrice!.formatPrice() ,
                       style: TextStyle(
                           fontFamily: 'shmid',
                           fontSize: 17.sp,
@@ -128,17 +134,22 @@ class ProductInShoppingBasket extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 6, right: 24),
                 child: Row(
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: 11.79.w,
-                      height: 2.84.h,
-                      decoration: BoxDecoration(
-                        color: LightColors.tomanColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Image.asset(
-                        'assets/images/trash.png',
-                        height: 17,
+                    InkWell(
+                      onTap: () {
+                        context.read<BasketBloc>().add(BasketRemoveProductEvent(index));
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 11.79.w,
+                        height: 2.84.h,
+                        decoration: BoxDecoration(
+                          color: LightColors.tomanColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Image.asset(
+                          'assets/images/trash.png',
+                          height: 17,
+                        ),
                       ),
                     ),
                     Padding(

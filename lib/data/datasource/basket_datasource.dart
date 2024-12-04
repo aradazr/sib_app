@@ -8,6 +8,8 @@ abstract class IBasketDataSource{
 
   Future<int> getBasketFinalPrice();
 
+  Future<void> removeProduct(int index);
+
   
 }
 
@@ -32,6 +34,12 @@ class BasketLocalDataSource extends IBasketDataSource{
     var finalPrice = productList.fold(0, (accumulator, product) => accumulator + product.realPrice!,);
 
     return finalPrice;
+  }
+  
+  @override
+  Future<void> removeProduct(int index) async {
+    
+    box.deleteAt(index);
   }
   
 }

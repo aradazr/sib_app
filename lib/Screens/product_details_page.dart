@@ -211,6 +211,11 @@ class DetailContentWidget extends StatelessWidget {
                             child: GestureDetector(
                               onTap: () {
                                 showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  isDismissible: true,
+                                  useSafeArea: true,
+                                  showDragHandle: true,
+                                  
                                   context: context,
                                   builder: (context) {
                                     return BlocProvider(
@@ -221,11 +226,13 @@ class DetailContentWidget extends StatelessWidget {
                                         return bloc;
                                       },
                                       child: DraggableScrollableSheet(
-                                        initialChildSize: 0.5,
-                                        minChildSize: 0.2,
-                                        maxChildSize: 0.7,
+                                        expand: true,
+                                        initialChildSize: 1,
+                                        minChildSize: 0.5,
+                                        maxChildSize: 1,
                                         builder: (context, scrollController) {
                                           return CommentBottomSheet(
+                                              parentWidget.product!.id,
                                               scrollController);
                                         },
                                       ),
@@ -371,99 +378,180 @@ class DetailContentWidget extends StatelessWidget {
 
 class CommentBottomSheet extends StatelessWidget {
   CommentBottomSheet(
+    this.productId,
     this.controller, {
     super.key,
   });
   ScrollController controller;
+  final String productId;
+  TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CommentBloc, CommentState>(
       builder: (context, state) {
-        return CustomScrollView(
-          controller: controller,
-          slivers: [
-            if (state is CommentLoading) ...{
-              SliverToBoxAdapter(
-                child: SpinKitCircle(
-                  color: Colors.blue,
-                  size: 50.0,
-                ),
-              ),
-            },
-            if (state is CommentResponse) ...{
-              state.response.fold(
-                (l) {
-                  return Text('error');
-                },
-                (commentList) {
-                  if (commentList.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: Text('نظری ثبت نشده است'),
-                    );
-                  }
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      return Container(
-                        alignment: Alignment.centerRight,
-                        margin: EdgeInsets.all(8),
-                        height: 60,
-                        width: 120,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(20)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.center,
+        return Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                controller: controller,
+                slivers: [
+                  if (state is CommentLoading) ...{
+                    SliverToBoxAdapter(
+                      child: SpinKitCircle(
+                        color: Colors.blue,
+                        size: 50.0,
+                      ),
+                    ),
+                  },
+                  if (state is CommentResponse) ...{
+                    state.response.fold(
+                      (l) {
+                        return Text('error');
+                      },
+                      (commentList) {
+                        if (commentList.isEmpty) {
+                          return SliverToBoxAdapter(
+                            child: Text('نظری ثبت نشده است'),
+                          );
+                        }
+                        return SliverList(
+                          delegate:
+                              SliverChildBuilderDelegate((context, index) {
+                            return Container(
+                              alignment: Alignment.centerRight,
+                              margin: EdgeInsets.all(8),
+                              height: 60,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    commentList[index].username.isEmpty ?
-                                    Directionality(
-                                      textDirection: TextDirection.rtl,
-                                      child: Text(
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        'کاربر:',
-                                        
-                                        textDirection: TextDirection.rtl,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          commentList[index].username.isEmpty
+                                              ? Directionality(
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  child: Text(
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    'کاربر:',
+                                                    textDirection:
+                                                        TextDirection.rtl,
+                                                  ),
+                                                )
+                                              : Text(
+                                                  '${commentList[index].username}:',
+                                                  textAlign: TextAlign.right,
+                                                  textDirection:
+                                                      TextDirection.rtl,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                          Text(
+                                            commentList[index].text,
+                                            textAlign: TextAlign.right,
+                                            textDirection: TextDirection.rtl,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
                                       ),
-                                    ):
-                                    Text(
-                                      '${commentList[index].username}:',
-                                      textAlign: TextAlign.right,
-                                      textDirection: TextDirection.rtl,
-                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    Text(
-                                      commentList[index].text,
-                                      textAlign: TextAlign.right,
-                                      textDirection: TextDirection.rtl,
-                                      overflow: TextOverflow.ellipsis,
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    const CircleAvatar(
+                                      backgroundColor: Colors.blue,
                                     ),
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              const CircleAvatar(
-                                backgroundColor: Colors.blue,
-                              ),
-                            ],
+                            );
+                          }, childCount: commentList.length),
+                        );
+                      },
+                    )
+                  }
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
+                    child: TextField(
+                      controller: textController,
+                      style: TextStyle(
+                        fontFamily: 'shmid',
+                        fontSize: 17.sp,
+                        color: LightColors.categoryText,
+                      ),
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Color(0xff2997FF),
+                            )),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                        filled: true,
+                        labelText: 'نظر خود را بنویسید',
+                        labelStyle: TextStyle(
+                          fontFamily: 'shmid',
+                          fontSize: 17.sp,
+                          color: Color(0xff6E6E73),
+                        ),
+                        fillColor: Color.fromARGB(5, 255, 255, 255),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: LightColors.categoryText,
                           ),
                         ),
-                      );
-                    }, childCount: commentList.length),
-                  );
-                },
-              )
-            }
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    context.read<CommentBloc>().add(
+                        CommentPostEvent(productId,textController.text));
+
+                        textController.text = '';
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 15),
+                    alignment: Alignment.center,
+                    height: 4.85.h,
+                    width: 28.w,
+                    decoration: BoxDecoration(
+                        color: LightColors.showPriceInsideContainer,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Text(
+                      'ثبت نظر',
+                      style: TextStyle(
+                          fontFamily: 'shmid',
+                          fontSize: 15.sp,
+                          color: LightColors.categoryText),
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
         );
       },

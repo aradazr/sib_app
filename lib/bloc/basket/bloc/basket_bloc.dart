@@ -25,7 +25,8 @@ class BasketBloc extends Bloc<BasketEvent, BasketState> {
     }));
 
     on<BasketPaymentInitEvent>((event, emmit) async {
-      _paymentHandler.initPaymentRequest(2000);
+      var finalPrice = await _basketRepository.getBasketFinalPrice();
+      _paymentHandler.initPaymentRequest(finalPrice);
      
     });
 
@@ -34,11 +35,11 @@ class BasketBloc extends Bloc<BasketEvent, BasketState> {
     },
     );
 
-    // on<BasketRemoveProductEvent>((event, emmit) async {
-    //   _basketRepository.removeProduct(event.index);
-    //   var basketItemList = await _basketRepository.getAllBasketItems();
-    //   var finalPrice = await _basketRepository.getBasketFinalPrice();
-    //   emmit(BasketDataFetchedState(basketItemList, finalPrice));
-    // });
+    on<BasketRemoveProductEvent>((event, emmit) async {
+      _basketRepository.removeProduct(event.index);
+      var basketItemList = await _basketRepository.getAllBasketItems();
+      var finalPrice = await _basketRepository.getBasketFinalPrice();
+      emmit(BasketDataFetchedState(basketItemList, finalPrice));
+    });
   }
 }
