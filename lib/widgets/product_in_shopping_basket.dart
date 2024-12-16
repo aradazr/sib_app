@@ -13,16 +13,14 @@ import 'package:sib_app/widgets/cached_image.dart';
 
 class ProductInShoppingBasket extends StatelessWidget {
   BasketItem basketItem;
-   ProductInShoppingBasket(
-    this.basketItem,
-    {
-      required this.index,
+  ProductInShoppingBasket(
+    this.basketItem, {
+    required this.index,
     super.key,
   });
-final int index;
+  final int index;
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       margin: EdgeInsets.only(left: 25, right: 25, top: 20),
       width: 87.17.w,
@@ -46,7 +44,7 @@ final int index;
               Padding(
                 padding: const EdgeInsets.only(top: 17, right: 24),
                 child: Text(
-                 basketItem.name,
+                  basketItem.name,
                   style: TextStyle(
                       fontFamily: 'shbold',
                       fontSize: 17.sp,
@@ -94,7 +92,7 @@ final int index;
                       ),
                     ),
                     Text(
-                      basketItem.realPrice!.formatPrice() ,
+                      basketItem.realPrice!.formatPrice(),
                       style: TextStyle(
                           fontFamily: 'shmid',
                           fontSize: 17.sp,
@@ -107,7 +105,10 @@ final int index;
                 padding: const EdgeInsets.only(right: 24, top: 7),
                 child: Row(
                   children: [
-                    ColorItemCheap(title: 'بنفش', color: '4287f5',),
+                    ColorItemCheap(
+                      title: 'بنفش',
+                      color: '4287f5',
+                    ),
                     Container(
                       alignment: Alignment.center,
                       width: 24.1.w,
@@ -136,7 +137,9 @@ final int index;
                   children: [
                     InkWell(
                       onTap: () {
-                        context.read<BasketBloc>().add(BasketRemoveProductEvent(index));
+                        context
+                            .read<BasketBloc>()
+                            .add(BasketRemoveProductEvent(index));
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -203,20 +206,18 @@ final int index;
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: 
-            SizedBox(
-              height: 100,
-              child: CachedImage(
-                
-                imageUrl: basketItem.thumbnail,
+              padding: const EdgeInsets.only(right: 10),
+              child: SizedBox(
+                height: 100,
+                child: CachedImage(
+                  imageUrl: basketItem.thumbnail,
+                ),
+              )
+              // Image.asset(
+              //   'assets/images/piphone.png',
+              //   height: 111,
+              // ),
               ),
-            )
-            // Image.asset(
-            //   'assets/images/piphone.png',
-            //   height: 111,
-            // ),
-          ),
         ],
       ),
     );
@@ -224,10 +225,9 @@ final int index;
 }
 
 class ColorItemCheap extends StatelessWidget {
-  
   String title;
   String? color;
-   ColorItemCheap({
+  ColorItemCheap({
     required this.title,
     this.color,
     super.key,
@@ -235,7 +235,6 @@ class ColorItemCheap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       margin: EdgeInsets.only(right: 5),
       width: 24.1.w,
@@ -254,20 +253,18 @@ class ColorItemCheap extends StatelessWidget {
                 color: LightColors.categoryText,
                 fontFamily: 'shmid'),
           ),
-          if(color != null)...{
-              Container(
-            margin: EdgeInsets.only(left: 19, right: 8),
-            alignment: Alignment.center,
-            width: 12,
-            height: 12,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle, color: color.parseToColor()),
-          ),
+          if (color != null) ...{
+            Container(
+              margin: EdgeInsets.only(left: 19, right: 8),
+              alignment: Alignment.center,
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle, color: color.parseToColor()),
+            ),
           }
         ],
       ),
     );
   }
 }
-
-

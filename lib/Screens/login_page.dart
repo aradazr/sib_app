@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:sib_app/Screens/dashboard_screen.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
 import 'package:sib_app/bloc/authentication/auth_event.dart';
 import 'package:sib_app/bloc/authentication/auth_state.dart';
@@ -64,14 +65,10 @@ class LoginPage extends StatelessWidget {
                     controller: userNameTextEditingController,
                     decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          
-                          color: Color(0xff2997FF),
-                          
-                        )
-                        
-                      ),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Color(0xff2997FF),
+                          )),
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                       filled: true,
@@ -108,14 +105,10 @@ class LoginPage extends StatelessWidget {
                     controller: passwordTextEditingController,
                     decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          
-                          color: Color(0xff2997FF),
-                          
-                        )
-                        
-                      ),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Color(0xff2997FF),
+                          )),
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                       filled: true,
@@ -127,7 +120,6 @@ class LoginPage extends StatelessWidget {
                       ),
                       fillColor: Color.fromARGB(5, 255, 255, 255),
                       border: OutlineInputBorder(
-
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
                           color: LightColors.categoryText,
@@ -183,11 +175,21 @@ class LoginPage extends StatelessWidget {
                   }
                   if (state is AuthResponseState) {
                     Text widget = Text('');
-                    state.reponse.fold((l) {
-                      widget = Text(l,style: TextStyle(color: Colors.red),);
-                    }, (r) {
-                      widget = Text(r,style: TextStyle(color: Colors.green),);
-                    });
+                    state.reponse.fold(
+                      (l) {
+                        widget = Text(
+                          l,
+                          style: TextStyle(color: Colors.red),
+                        );
+                      },
+                      (r) {
+                        widget = Text(
+                          r,
+                          style: TextStyle(color: Colors.green),
+                        );
+                        
+                      },
+                    );
                     return widget;
                   }
                   return Text('خطااااا');

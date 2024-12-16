@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:sib_app/di/2di.dart';
 import 'package:sib_app/utils/3api_exeption.dart';
 import 'package:sib_app/utils/5auth_manager.dart';
+import 'package:sib_app/utils/dio_provider.dart';
 
 abstract class IAuthenticationDatasource {
   Future<void> register(
@@ -13,7 +14,7 @@ abstract class IAuthenticationDatasource {
 }
 
 class AuthenticationRemote implements IAuthenticationDatasource {
-  final Dio _dio = locator.get();
+  final Dio _dio = DioProvider.createDioWithoutHeader();
 
   @override
   Future<void> register(

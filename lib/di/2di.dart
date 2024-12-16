@@ -18,6 +18,7 @@ import 'package:sib_app/data/repository/category_repository.dart';
 import 'package:sib_app/data/repository/comment_repository.dart';
 import 'package:sib_app/data/repository/product_detail_repository.dart';
 import 'package:sib_app/data/repository/products_repository.dart';
+import 'package:sib_app/utils/dio_provider.dart';
 import 'package:sib_app/utils/payment_handler.dart';
 import 'package:sib_app/utils/url_handler.dart';
 
@@ -26,7 +27,6 @@ Future<void> getItInit() async {
   await _initComponents();
 
   _initDatasoruces();
-
 
   _initRepositories();
 
@@ -37,18 +37,16 @@ Future<void> getItInit() async {
 }
 
 Future<void> _initComponents() async {
+  locator.registerSingleton<SharedPreferences>(
+    await SharedPreferences.getInstance(),
+  );
   locator.registerSingleton<UrlHandler>(UrlLauncher());
-  
+
   locator
       .registerSingleton<PaymentHandler>(ZarinpalPaymentHandler(locator.get()));
 
   locator.registerSingleton<Dio>(
-    Dio(
-      BaseOptions(baseUrl: 'https://startflutter.ir/api/'),
-    ),
-  );
-  locator.registerSingleton<SharedPreferences>(
-    await SharedPreferences.getInstance(),
+    DioProvider.createDio(),
   );
 }
 

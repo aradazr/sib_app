@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sib_app/Screens/dashboard_screen.dart';
+import 'package:sib_app/Screens/login_page.dart';
+import 'package:sib_app/bloc/authentication/auth_bloc.dart';
+import 'package:sib_app/bloc/authentication/auth_state.dart';
 import 'package:sib_app/constans/my_colors.dart';
+import 'package:sib_app/main.dart';
+import 'package:sib_app/utils/5auth_manager.dart';
 import 'package:sib_app/widgets/list_tile_items.dart';
 import 'package:sib_app/widgets/my_app_bar.dart';
 
-class MyProfilePage extends StatelessWidget {
+class MyProfilePage extends StatefulWidget {
   const MyProfilePage({super.key});
 
+  @override
+  State<MyProfilePage> createState() => _MyProfilePageState();
+}
+
+class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +40,6 @@ class MyProfilePage extends StatelessWidget {
                 textDirection: TextDirection.rtl,
                 child: ListTile(
                   tileColor: Colors.transparent,
-                  
                   trailing: Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: Image.asset(
@@ -42,13 +53,53 @@ class MyProfilePage extends StatelessWidget {
                       'آراد آذرپناه',
                     ),
                   ),
-                  subtitleTextStyle: TextStyle(fontFamily: 'shmid', fontSize: 13,color: LightColors.listTilePhoneNumber),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: 'shmid',
+                      fontSize: 13,
+                      color: LightColors.listTilePhoneNumber),
                   titleTextStyle: TextStyle(fontFamily: 'shbold', fontSize: 16),
                   subtitle: Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: Text('09337109366'),
                   ),
                 ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  
+                      AuthManager.logout();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) {
+                              var authBloc = AuthBloc();
+                              authBloc.stream.forEach((state) {
+                                 if (state is AuthResponseState) {
+                                state.reponse.fold(
+                                  (l) {},
+                                  (r) {
+                                    globalNavigatorKey.currentState
+                                        ?.pushReplacement(MaterialPageRoute(
+                                      builder: (context) => DashBoardPage(),
+                                    ));
+                                    
+                                  },
+                                );
+                              }
+                              },);
+                              return authBloc;
+                            },
+                            child: LoginPage(),
+                          ),
+                        ),
+                        
+                        
+                      );
+                    
+                  
+                },
+                child: Text('خروج'),
               ),
               ListTileItems(),
               Divider(
