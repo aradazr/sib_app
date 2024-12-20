@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sib_app/Screens/dashboard_page.dart';
+import 'package:sib_app/Screens/login_page.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
 import 'package:sib_app/bloc/authentication/auth_event.dart';
 import 'package:sib_app/bloc/authentication/auth_state.dart';
@@ -19,8 +20,33 @@ class SignUpPage extends StatelessWidget {
       TextEditingController(text: '12345678');
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AuthBloc(),
+      child: ViewContainerSignUp(
+          userNameTextEditingController: userNameTextEditingController,
+          passwordTextEditingController: passwordTextEditingController,
+          passwordConfirmTextEditingController:
+              passwordConfirmTextEditingController),
+    );
+  }
+}
+
+class ViewContainerSignUp extends StatelessWidget {
+  const ViewContainerSignUp({
+    super.key,
+    required this.userNameTextEditingController,
+    required this.passwordTextEditingController,
+    required this.passwordConfirmTextEditingController,
+  });
+
+  final TextEditingController userNameTextEditingController;
+  final TextEditingController passwordTextEditingController;
+  final TextEditingController passwordConfirmTextEditingController;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      
       backgroundColor: LightColors.homePageBackground,
       body: SingleChildScrollView(
         child: SizedBox(
@@ -67,27 +93,40 @@ class SignUpPage extends StatelessWidget {
               SizedBox(
                 height: 2.h,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/linkArrow.png',
-                    height: 13,
-                  ),
-                  SizedBox(
-                    width: 2.w,
-                  ),
-                  Text(
-                    'وارد شوید',
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'shbold',
-                      fontSize: 16.sp,
-                      color: LightColors.seeAllText,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => AuthBloc(),
+                        child: LoginPage(),
+                      ),
                     ),
-                  ),
-                ],
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/linkArrow.png',
+                      height: 13,
+                    ),
+                    SizedBox(
+                      width: 2.w,
+                    ),
+                    Text(
+                      'وارد شوید',
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'shbold',
+                        fontSize: 16.sp,
+                        color: LightColors.seeAllText,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 5.h,
@@ -231,7 +270,32 @@ class SignUpPage extends StatelessWidget {
                     color: LightColors.seeAllText,
                     borderRadius: BorderRadius.circular(13),
                   ),
-                  child: BlocBuilder<AuthBloc, AuthState>(
+                  child: BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthResponseState) {
+                        state.reponse.fold(
+                          (l) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          },
+                          (r) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                  create: (context) => AuthBloc(),
+                                  child: DashBoardPage(),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    },
                     builder: (context, state) {
                       if (state is AuthInitiateState) {
                         return InkWell(
@@ -260,7 +324,7 @@ class SignUpPage extends StatelessWidget {
                         Text widget = Text('');
                         state.reponse.fold(
                           (l) {
-                            widget = Text(
+                            Text(
                               l,
                               style: TextStyle(color: Colors.red),
                             );

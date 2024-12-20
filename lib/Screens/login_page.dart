@@ -18,8 +18,29 @@ class LoginPage extends StatelessWidget {
   final passwordTextEditingController = TextEditingController(text: '12345678');
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AuthBloc(),
+      child: ViewContainer(
+          userNameTextEditingController: userNameTextEditingController,
+          passwordTextEditingController: passwordTextEditingController),
+    );
+  }
+}
+
+class ViewContainer extends StatelessWidget {
+  const ViewContainer({
+    super.key,
+    required this.userNameTextEditingController,
+    required this.passwordTextEditingController,
+  });
+
+  final TextEditingController userNameTextEditingController;
+  final TextEditingController passwordTextEditingController;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: LightColors.homePageBackground,
       body: SingleChildScrollView(
         child: SizedBox(
@@ -133,7 +154,18 @@ class LoginPage extends StatelessWidget {
               SizedBox(
                 height: 2.1.h,
               ),
-              BlocBuilder<AuthBloc, AuthState>(
+              BlocConsumer<AuthBloc, AuthState>(
+                 listener: (context, state) {
+                   if(state is AuthResponseState){
+                     state.reponse.fold((l) {
+                       
+                     }, (r) {
+                       Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return DashBoardPage();
+                       },));
+                     },);
+                   }
+                 },
                 builder: (context, state) {
                   if (state is AuthInitiateState) {
                     return InkWell(
@@ -204,28 +236,7 @@ class LoginPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return BlocProvider(
-                          create: (context) {
-                          var authBloc = AuthBloc();
-                          authBloc.stream.forEach(
-                            (state) {
-                              if (state is AuthResponseState) {
-                                state.reponse.fold(
-                                  (l) {},
-                                  (r) {
-                                    globalNavigatorKey.currentState
-                                        ?.pushReplacement(MaterialPageRoute(
-                                      builder: (context) => DashBoardPage(),
-                                    ));
-                                  },
-                                );
-                              }
-                            },
-                          );
-                          return authBloc;
-                        },
-                          child: SignUpPage(),
-                        );
+                        return SignUpPage();
                       },
                     ),
                   );

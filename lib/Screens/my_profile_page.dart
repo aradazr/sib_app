@@ -67,33 +67,11 @@ class _MyProfilePageState extends State<MyProfilePage> {
               ElevatedButton(
                 onPressed: () {
                   AuthManager.logout();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (context) {
-                          var authBloc = AuthBloc();
-                          authBloc.stream.forEach(
-                            (state) {
-                              if (state is AuthResponseState) {
-                                state.reponse.fold(
-                                  (l) {},
-                                  (r) {
-                                    globalNavigatorKey.currentState
-                                        ?.pushReplacement(MaterialPageRoute(
-                                      builder: (context) => DashBoardPage(),
-                                    ));
-                                  },
-                                );
-                              }
-                            },
-                          );
-                          return authBloc;
-                        },
-                        child: LoginPage(),
-                      ),
-                    ),
-                  );
+
+                  globalNavigatorKey.currentState
+                      ?.pushReplacement(MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ));
                 },
                 child: Text('خروج'),
               ),

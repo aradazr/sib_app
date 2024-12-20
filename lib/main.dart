@@ -39,10 +39,8 @@ class _MyAppState extends State<MyApp> {
         title: 'Sib App',
         home: 
         (AuthManager.readAuth().isEmpty)
-            ? BlocProvider(
-                create: (context) => AuthBloc(),
-                child: LoginPage(),
-              )
+            ?  LoginPage()
+              
             : DashBoardPage(),
       ),
     );
