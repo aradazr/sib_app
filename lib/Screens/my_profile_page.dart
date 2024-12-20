@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sib_app/Screens/dashboard_screen.dart';
+import 'package:sib_app/Screens/dashboard_page.dart';
 import 'package:sib_app/Screens/login_page.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
 import 'package:sib_app/bloc/authentication/auth_state.dart';
@@ -66,16 +66,16 @@ class _MyProfilePageState extends State<MyProfilePage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  
-                      AuthManager.logout();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                            create: (context) {
-                              var authBloc = AuthBloc();
-                              authBloc.stream.forEach((state) {
-                                 if (state is AuthResponseState) {
+                  AuthManager.logout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) {
+                          var authBloc = AuthBloc();
+                          authBloc.stream.forEach(
+                            (state) {
+                              if (state is AuthResponseState) {
                                 state.reponse.fold(
                                   (l) {},
                                   (r) {
@@ -83,21 +83,17 @@ class _MyProfilePageState extends State<MyProfilePage> {
                                         ?.pushReplacement(MaterialPageRoute(
                                       builder: (context) => DashBoardPage(),
                                     ));
-                                    
                                   },
                                 );
                               }
-                              },);
-                              return authBloc;
                             },
-                            child: LoginPage(),
-                          ),
-                        ),
-                        
-                        
-                      );
-                    
-                  
+                          );
+                          return authBloc;
+                        },
+                        child: LoginPage(),
+                      ),
+                    ),
+                  );
                 },
                 child: Text('خروج'),
               ),

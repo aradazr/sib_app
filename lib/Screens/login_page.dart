@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:sib_app/Screens/dashboard_screen.dart';
+import 'package:sib_app/Screens/dashboard_page.dart';
+import 'package:sib_app/Screens/sign_up_page.dart';
 import 'package:sib_app/bloc/authentication/auth_bloc.dart';
 import 'package:sib_app/bloc/authentication/auth_event.dart';
 import 'package:sib_app/bloc/authentication/auth_state.dart';
@@ -163,7 +164,7 @@ class LoginPage extends StatelessWidget {
                           'ادامه',
                           style: TextStyle(
                             fontFamily: 'shmid',
-                            fontSize: 20.sp,
+                            fontSize: 17.sp,
                             color: LightColors.categoryText,
                           ),
                         ),
@@ -187,7 +188,6 @@ class LoginPage extends StatelessWidget {
                           r,
                           style: TextStyle(color: Colors.green),
                         );
-                        
                       },
                     );
                     return widget;
@@ -198,13 +198,46 @@ class LoginPage extends StatelessWidget {
               SizedBox(
                 height: 3.4.h,
               ),
-              Text(
-                textAlign: TextAlign.center,
-                'اکانت ندارید؟\nساخت اکانت سیب اپ',
-                style: TextStyle(
-                    fontFamily: 'sh',
-                    fontSize: 17.sp,
-                    color: Color(0xff2997FF)),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return BlocProvider(
+                          create: (context) {
+                          var authBloc = AuthBloc();
+                          authBloc.stream.forEach(
+                            (state) {
+                              if (state is AuthResponseState) {
+                                state.reponse.fold(
+                                  (l) {},
+                                  (r) {
+                                    globalNavigatorKey.currentState
+                                        ?.pushReplacement(MaterialPageRoute(
+                                      builder: (context) => DashBoardPage(),
+                                    ));
+                                  },
+                                );
+                              }
+                            },
+                          );
+                          return authBloc;
+                        },
+                          child: SignUpPage(),
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: Text(
+                  textAlign: TextAlign.center,
+                  'اکانت ندارید؟\nساخت اکانت سیب اپ',
+                  style: TextStyle(
+                      fontFamily: 'sh',
+                      fontSize: 15.sp,
+                      color: Color(0xff2997FF)),
+                ),
               ),
               Spacer(),
               Image.asset(

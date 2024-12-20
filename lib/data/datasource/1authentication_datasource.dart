@@ -29,6 +29,9 @@ class AuthenticationRemote implements IAuthenticationDatasource {
       if (response.statusCode == 200) {
         login(username, password);
       }
+
+      
+      
     } on DioException catch (ex) {
       throw ApiException(ex.response?.statusCode, ex.response?.data['message'],response: ex.response);
     } catch (ex) {
