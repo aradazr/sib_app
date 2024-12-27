@@ -5,7 +5,7 @@ class DioProvider {
   static Dio createDio() {
     Dio dio = Dio(
       BaseOptions(
-        baseUrl: 'https://startflutter.ir/api/',
+        baseUrl: 'https',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${AuthManager.readAuth()}'
@@ -19,7 +19,7 @@ class DioProvider {
   static Dio createDioWithoutHeader() {
     Dio dio = Dio(
       BaseOptions(
-        baseUrl: 'https://startflutter.ir/api/',
+        baseUrl: 'https',
       ),
     );
 
